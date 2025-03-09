@@ -34,11 +34,10 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     });
 
-  // 다시 처음으로 돌아가기 버튼 기능 추가
   document
     .getElementById('restartButton')
     .addEventListener('click', function () {
-      localStorage.clear(); // 로컬스토리지 데이터 초기화
-      window.location.href = 'index.html'; // 메인 페이지로 이동
+      localStorage.clear();
+      window.location.href = 'index.html';
     });
 });
