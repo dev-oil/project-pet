@@ -8,14 +8,40 @@
     <link rel="stylesheet" href="css/style.css" />
   </head>
   <body>
+    <header class="header">
+      <h1 class="logo">
+        <a href="index.html" class="logo_link"
+          ><img src="./images/logo.gif" alt="" /><span class="blind"
+            >FurFriend</span
+          ></a
+        >
+      </h1>
+
+      <div class="hamburger" id="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+
+      <nav id="nav" class="nav">
+        <ul>
+          <li><a href="about.html">소개</a></li>
+          <li><a href="test.html">MBTI 테스트</a></li>
+          <li><a href="shelters.html">보호소 정보</a></li>
+        </ul>
+      </nav>
+    </header>
     <main class="container test_container">
-      <section class="sectioin">
-        <h1 class="title">🐾 펫BTI 테스트</h1>
+      <section class="section">
+        <h2 class="title">🐾 펫BTI 테스트</h2>
         <div id="questionContainer" class="question_area"></div>
-        <button id="nextButton" class="btn_black" style="display: none">다음</button>
+        <button id="nextButton" class="btn_black" style="display: none">
+          다음
+        </button>
       </section>
     </main>
 
     <script src="js/mbti.js"></script>
+    <script src="js/common.js"></script>
   </body>
 </html>

@@ -1,19 +1,130 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap");
 
 /* 공통 컴포넌트 */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid #000;
+}
+.header .logo {
+  width: 100px;
+}
+.header .logo_link {
+  display: block;
+}
+
+/* 📌 네비게이션 기본 스타일 */
+.header .nav {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: #fff;
+  width: 200px;
+  padding: 10px;
+  border: 1px solid #000;
+  border-radius: 8px;
+  box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.1);
+  display: none;
+}
+
+.header .nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.header .nav ul li {
+  padding: 10px;
+  text-align: center;
+}
+
+.header .nav ul li a {
+  text-decoration: none;
+  color: black;
+  font-size: 1.2rem;
+  font-weight: 600;
+  display: block;
+  transition: color 0.3s ease-in-out;
+}
+
+.header .nav ul li a:hover {
+  color: gray;
+}
+
+.hamburger {
+  width: 30px;
+  height: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.hamburger span {
+  display: block;
+  width: 100%;
+  height: 4px;
+  background: black;
+  transition: all 0.3s ease-in-out;
+}
+
+.hamburger.is_show span:nth-child(1) {
+  transform: translateY(10px) rotate(45deg);
+}
+
+.hamburger.is_show span:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger.is_show span:nth-child(3) {
+  transform: translateY(-10px) rotate(-45deg);
+}
+
+.nav.is_show {
+  display: block;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.container {
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.main_container,
+.result_container,
+.test_container {
+  display: flex;
+  align-items: center;
+  height: calc(100vh - 75px);
+}
+
 .section {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  width: 90%;
-  max-width: 1200px;
+  justify-content: center;
   margin: 0 auto;
 }
 .btn_black {
   margin: 20px auto 0;
   padding: 10px 24px;
-  background: black;
-  color: white;
+  background: #000;
+  color: #fff;
   font-size: 20px;
   font-weight: 700;
   border: 2px solid black;
@@ -22,14 +133,19 @@
   border-radius: 8px;
 }
 .btn_black:hover {
-  background: white;
-  color: black;
-  border-color: black;
+  background: #fff;
+  color: #000;
+  border-color: #000;
   transform: scale(1.05);
+}
+.footer {
+  background: #000;
+  color: #fff;
 }
 
 /***************** main ****************/
 .main_container .section {
+  padding: 0 20px;
   gap: 20px;
 }
 .main_container .img_area {
@@ -41,9 +157,8 @@
 }
 .main_container .info_area {
   flex: 1;
-  max-width: 50%;
+  max-width: 450px;
   text-align: center;
-  padding: 20px;
 }
 .main_container .title {
   font-size: 60px;
@@ -77,15 +192,16 @@
 }
 
 /***************** test ****************/
-.test_container {
+.test_container .section {
   width: 90%;
   max-width: 800px;
   margin: auto;
   text-align: center;
   padding: 40px;
-  background: white;
+  background: #fff;
   border-radius: 16px;
   box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.1);
+  flex-direction: column;
 }
 .test_container .title {
   font-size: 30px;
@@ -101,10 +217,10 @@
 .test_container .input_box {
   margin-top: 20px;
 }
-.test_container input[type='radio'] {
+.test_container input[type="radio"] {
   position: absolute;
 }
-.test_container input[type='radio'] + label {
+.test_container input[type="radio"] + label {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -116,24 +232,24 @@
   border: 2px solid transparent;
   text-align: center;
 }
-.test_container input[type='radio']:checked + label {
-  background: black;
-  color: white;
-  border-color: black;
+.test_container input[type="radio"]:checked + label {
+  background: #000;
+  color: #fff;
+  border-color: #000;
   transform: scale(1.05);
 }
-.test_container input[type='radio'] + label:hover {
+.test_container input[type="radio"] + label:hover {
   background: #e0e0e0;
 }
 
 /***************** result ****************/
-.result_container {
+.result_container .section {
   width: 90%;
   max-width: 800px;
   margin: auto;
   text-align: center;
   padding: 40px;
-  background: white;
+  background: #fff;
   border-radius: 16px;
   box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.1);
 }
@@ -188,4 +304,56 @@
   .main_container .info_area {
     max-width: none;
   }
+}
+
+/***************** about *****************/
+.about_container {
+  width: 100%;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.about_container .about_kv {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.about_container .title {
+  font-size: 100px;
+  font-weight: 900;
+  letter-spacing: -2px;
+}
+
+.about_container .sub_title {
+  font-size: 30px;
+  color: #555;
+}
+
+.about_container .section_content {
+  display: block;
+  margin: 80px 0;
+  padding: 80px 40px;
+}
+
+.about_container .content_title {
+  font-size: 50px;
+}
+.about_container .content_desc {
+  margin-top: 10px;
+  font-size: 20px;
+}
+
+.about_container .image_box {
+  flex: 1;
+  display: flex;
+}
+
+.about_container .image_box img {
+  width: 100%;
+  max-width: 500px;
+  border-radius: 12px;
+  box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.1);
 }
