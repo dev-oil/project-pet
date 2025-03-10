@@ -18,15 +18,17 @@ document.addEventListener('DOMContentLoaded', function () {
       const q = questions[currentQuestionIndex];
 
       const questionElem = document.createElement('div');
-      questionElem.innerHTML = `<p>${q.question}</p>`;
+      questionElem.innerHTML = `<p class="question">${q.question}</p>`;
 
       q.options.forEach((option) => {
+        const optionId = `option_${option.value}`;
+
         questionElem.innerHTML += `
-                  <label>
-                      <input type="radio" name="answer" value="${option.value}">
-                      ${option.text}
-                  </label><br>
-              `;
+          <div class="input_box">
+            <input type="radio" id="${optionId}" name="answer" value="${option.value}">
+            <label for="${optionId}" tabindex="0">${option.text}</label>
+          </div>
+        `;
       });
 
       questionContainer.appendChild(questionElem);

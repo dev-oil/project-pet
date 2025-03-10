@@ -26,10 +26,12 @@ document.addEventListener('DOMContentLoaded', function () {
       } else {
         recommendedPets.forEach((pet) => {
           petContainer.innerHTML += `
-                      <h3>${pet.name}</h3>
-                      <p>${pet.description}</p>
-                      <img src="${pet.image}" width="200">
-                  `;
+            <strong class="pet">${pet.name}</strong>
+            <p class="desc">${pet.description}</p>
+            <div class="img_box">
+              <img src="${pet.image}">
+            </div>
+          `;
         });
       }
     });
