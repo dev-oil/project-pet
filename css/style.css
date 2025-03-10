@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap');
 
 /* 공통 컴포넌트 */
 .header {
@@ -19,7 +19,6 @@
   display: block;
 }
 
-/* 📌 네비게이션 기본 스타일 */
 .header .nav {
   position: absolute;
   top: 100%;
@@ -107,7 +106,6 @@
   margin: 0 auto;
 }
 .main_container,
-.result_container,
 .test_container {
   display: flex;
   align-items: center;
@@ -217,10 +215,10 @@
 .test_container .input_box {
   margin-top: 20px;
 }
-.test_container input[type="radio"] {
+.test_container input[type='radio'] {
   position: absolute;
 }
-.test_container input[type="radio"] + label {
+.test_container input[type='radio'] + label {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -232,29 +230,25 @@
   border: 2px solid transparent;
   text-align: center;
 }
-.test_container input[type="radio"]:checked + label {
+.test_container input[type='radio']:checked + label {
   background: #000;
   color: #fff;
   border-color: #000;
   transform: scale(1.05);
 }
-.test_container input[type="radio"] + label:hover {
+.test_container input[type='radio'] + label:hover {
   background: #e0e0e0;
 }
 
 /***************** result ****************/
 .result_container .section {
-  width: 90%;
-  max-width: 800px;
-  margin: auto;
-  text-align: center;
-  padding: 40px;
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.1);
-}
-.result_container .section {
+  min-height: 100vh;
+  padding: 50px 20px;
   flex-direction: column;
+  text-align: center;
+}
+.result_container .section + .section {
+  border-top: 1px solid #000;
 }
 .result_container .title {
   padding-bottom: 15px;
@@ -295,15 +289,12 @@
 .result_container .img_box img {
   width: 100%;
 }
-
-@media screen and (max-width: 767px) {
-  .main_container .section {
-    flex-direction: column;
-    gap: 0;
-  }
-  .main_container .info_area {
-    max-width: none;
-  }
+.result_container .summary_list {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
 }
 
 /***************** about *****************/
@@ -356,4 +347,34 @@
   max-width: 500px;
   border-radius: 12px;
   box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.1);
+}
+
+@media screen and (max-width: 767px) {
+  .header {
+    padding: 5px 10px;
+  }
+  .header .logo {
+    width: 80px;
+  }
+  .hamburger {
+    width: 25px;
+    height: 18px;
+  }
+  .hamburger span {
+    height: 2px;
+  }
+  .hamburger.is_show span:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+  }
+  .hamburger.is_show span:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+  }
+
+  .main_container .section {
+    flex-direction: column;
+    gap: 0;
+  }
+  .main_container .info_area {
+    max-width: none;
+  }
 }

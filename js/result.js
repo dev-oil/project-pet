@@ -21,6 +21,15 @@ document.addEventListener('DOMContentLoaded', function () {
       const recommendedPets = animals[mbti] || [];
       const petContainer = document.getElementById('petRecommendation');
 
+      if (recommendedPets.length > 0) {
+        document.getElementById('matchedBreed').textContent =
+          recommendedPets[0].name;
+        localStorage.setItem('matchedBreed', recommendedPets[0].name);
+      } else {
+        document.getElementById('matchedBreed').textContent =
+          '추천할 반려동물이 없습니다.';
+      }
+
       if (recommendedPets.length === 0) {
         petContainer.innerHTML = '<p>추천할 반려동물이 없습니다.</p>';
       } else {

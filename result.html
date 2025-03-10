@@ -34,7 +34,12 @@
       </nav>
     </header>
     <main class="container result_container">
-      <section class="section">
+      <section
+        class="section"
+        data-aos="fade-up"
+        data-aos-delay="300"
+        data-aos-duration="600"
+      >
         <h2 class="title">
           당신의 펫BTI 유형은? <span id="mbtiResult" class="result"></span>
         </h2>
@@ -42,11 +47,61 @@
         <div id="petRecommendation" class="recommendation_area"></div>
         <button id="restartButton" class="btn_black">다시 시작하기</button>
       </section>
+      <section
+        class="section"
+        data-aos="fade-up"
+        data-aos-delay="300"
+        data-aos-duration="600"
+      >
+        <h2 class="title">입양 가능한 유기동물</h2>
+        <p class="desc">
+          당신과 잘 맞는 <strong id="matchedBreed"></strong> 품종의 유기동물을
+          확인하세요!
+        </p>
+        <div id="adoptableAnimalsSummary" class="summary">
+          <ul class="summary_list">
+            <li class="list_item">
+              <div class="img_box">
+                <img src="./images/bordercollie.jpg" alt="" />
+              </div>
+              <div class="info_box">
+                <span class="name">콜리</span>
+                <span class="shelter">보호소 링크</span>
+                <span class="shelter_number">보호소 전화번호</span>
+              </div>
+            </li>
+            <li class="list_item">
+              <div class="img_box">
+                <img src="./images/bordercollie.jpg" alt="" />
+              </div>
+              <div class="info_box">
+                <span class="name">콜리</span>
+                <span class="shelter">보호소 링크</span>
+                <span class="shelter_number">보호소 전화번호</span>
+              </div>
+            </li>
+            <li class="list_item">
+              <div class="img_box">
+                <img src="./images/bordercollie.jpg" alt="" />
+              </div>
+              <div class="info_box">
+                <span class="name">콜리</span>
+                <span class="shelter">보호소 링크</span>
+                <span class="shelter_number">보호소 전화번호</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <button id="viewSheltersButton" class="btn_black">
+          더 많은 유기동물 보러가기
+        </button>
+      </section>
     </main>
     <script>
       AOS.init();
     </script>
-    <script src="js/common.js"></script>
     <script src="js/result.js"></script>
+    <script src="js/common.js"></script>
   </body>
 </html>
