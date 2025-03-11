@@ -62,6 +62,7 @@ FurFriend/
 │── index.html      # 메인 페이지
 │── about.html      # 프로젝트 소개 페이지
 │── test.html       # 펫BTI 테스트 페이지
+│── result.html     # 펫BTI 결과 페이지
 │── shelters.html   # 보호소 정보 페이지
 │── README.md       # 프로젝트 설명 파일
 ```
