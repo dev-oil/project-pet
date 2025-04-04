@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
-  // pages api 키 연동 방법 찾아두기
-  const apiKey = 'API 키';
+  const apiKey = 'api 키 넣을 곳';
   const apiUrl = `https://openapi.gg.go.kr/AbdmAnimalProtect?Key=${apiKey}&Type=json&pIndex=1&pSize=50`;
 
   fetch(apiUrl)
@@ -24,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function () {
                   <p class="shelter_address">주소: ${shelter.REFINE_ROADNM_ADDR}</p>
                   <p class="shelter_species">품종: ${shelter.SPECIES_NM}</p>
                   <p class="shelter_info">특징: ${shelter.SFETR_INFO}</p>
-                  <p class="shelter_phone">연락처: <a href="tel:${shelter.SHTER_TELNO}">${shelter.SHTER_TELNO}</a></p>
+                  <p class="shelter_phone">연락처: <a href="tel:${shelter.SHTER_TELNO}" class="shelter_phone">${shelter.SHTER_TELNO}</a></p>
               `;
 
         shelterList.appendChild(shelterItem);
