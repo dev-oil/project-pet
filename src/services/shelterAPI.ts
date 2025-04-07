@@ -1,4 +1,5 @@
 export type ShelterAnimal = {
+  ABDM_IDNTFY_NO: number;
   SPECIES_NM: string;
   SHTER_NM: string;
   SHTER_TELNO: string;

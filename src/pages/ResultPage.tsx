@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import animals from '../data/animals.json';
-import { fetchShelterAnimals } from '../services/shelterAPI';
-import { useEffect } from 'react';
+import { fetchShelterAnimals, ShelterAnimal } from '../services/shelterAPI';
+import { useEffect, useState } from 'react';
 
 // 타입 정의
 type MBTILetter = 'E' | 'I' | 'S' | 'N' | 'T' | 'F' | 'J' | 'P';
@@ -63,10 +63,12 @@ export const ResultPage = () => {
   const mbtiTyped = mbti as MBTIType;
   const pet = animal[mbtiTyped];
 
+  const [shelterAnimals, setShelterAnimals] = useState<ShelterAnimal[]>([]);
+
   useEffect(() => {
     const loadShelters = async () => {
       const result = await fetchShelterAnimals(pet.name);
-      console.log(result);
+      setShelterAnimals(result);
     };
 
     loadShelters();
@@ -101,41 +103,30 @@ export const ResultPage = () => {
       <section className='section'>
         <h2 className='title'>입양 가능한 유기동물</h2>
         <p id='desc' className='desc'>
-          당신과 잘 맞는 <strong id='matchedBreed'></strong> 품종의 유기동물을
+          당신과 잘 맞는 <strong>{pet.name}</strong> 품종의 유기동물을
           확인하세요!
         </p>
         <div className='summary'>
           <ul className='summary_list'>
-            <li className='list_item'>
-              <div className='img_box'>
-                <img src='./images/bordercollie.jpg' alt='' />
-              </div>
-              <div className='info_box'>
-                <span className='name'>콜리</span>
-                <span className='shelter'>보호소 링크</span>
-                <span className='shelter_number'>보호소 전화번호</span>
-              </div>
-            </li>
-            <li className='list_item'>
-              <div className='img_box'>
-                <img src='./images/bordercollie.jpg' alt='' />
-              </div>
-              <div className='info_box'>
-                <span className='name'>콜리</span>
-                <span className='shelter'>보호소 링크</span>
-                <span className='shelter_number'>보호소 전화번호</span>
-              </div>
-            </li>
-            <li className='list_item'>
-              <div className='img_box'>
-                <img src='./images/bordercollie.jpg' alt='' />
-              </div>
-              <div className='info_box'>
-                <span className='name'>콜리</span>
-                <span className='shelter'>보호소 링크</span>
-                <span className='shelter_number'>보호소 전화번호</span>
-              </div>
-            </li>
+            {shelterAnimals.map((animal) => {
+              return (
+                <li className='list_item' key={animal.ABDM_IDNTFY_NO}>
+                  <div className='img_box'>
+                    <img src={animal.IMAGE_COURS} alt='' />
+                  </div>
+                  <div className='info_box'>
+                    <span className='name'>{animal.SPECIES_NM}</span>
+                    <span className='shelter'>{animal.SHTER_NM}</span>
+                    <a
+                      href={`tel:${animal.SHTER_TELNO}`}
+                      className='shelter_number'
+                    >
+                      {animal.SHTER_TELNO}
+                    </a>
+                  </div>
+                </li>
+              );
+            })}
           </ul>
         </div>
 
