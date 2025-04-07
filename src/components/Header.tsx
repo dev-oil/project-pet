@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
-import logo from '../assets/images/logo.gif';
+import logo from '/images/logo.gif';
 
 export const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
