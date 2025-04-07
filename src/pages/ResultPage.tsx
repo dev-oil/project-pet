@@ -1,5 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import animals from '../data/animals.json';
+import { fetchShelterAnimals } from '../services/shelterAPI';
+import { useEffect } from 'react';
 
 // 타입 정의
 type MBTILetter = 'E' | 'I' | 'S' | 'N' | 'T' | 'F' | 'J' | 'P';
@@ -60,6 +62,15 @@ export const ResultPage = () => {
 
   const mbtiTyped = mbti as MBTIType;
   const pet = animal[mbtiTyped];
+
+  useEffect(() => {
+    const loadShelters = async () => {
+      const result = await fetchShelterAnimals(pet.name);
+      console.log(result);
+    };
+
+    loadShelters();
+  }, [pet.name]);
 
   return (
     <main className='container result_container'>
