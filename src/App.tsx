@@ -7,17 +7,20 @@ import { ResultPage } from './pages/ResultPage';
 import { ShelterPage } from './pages/ShelterPage';
 
 import './App.css';
+import { Layout } from './components/Layout';
 
 function App() {
   return (
     <Router>
-      <Routes>
-        <Route path='/' element={<HomePage />} />
-        <Route path='/about' element={<AboutPage />} />
-        <Route path='/test' element={<TestPage />} />
-        <Route path='/result' element={<ResultPage />} />
-        <Route path='/shelters' element={<ShelterPage />} />
-      </Routes>
+      <Layout>
+        <Routes>
+          <Route path='/' element={<HomePage />} />
+          <Route path='/about' element={<AboutPage />} />
+          <Route path='/test' element={<TestPage />} />
+          <Route path='/result' element={<ResultPage />} />
+          <Route path='/shelters' element={<ShelterPage />} />
+        </Routes>
+      </Layout>
     </Router>
   );
 }
