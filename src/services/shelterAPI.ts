@@ -12,7 +12,6 @@ export const fetchShelterAnimals = async (
   breed: string
 ): Promise<ShelterAnimal[]> => {
   const apiKey = import.meta.env.VITE_API_KEY;
-
   const apiUrl = `https://openapi.gg.go.kr/AbdmAnimalProtect?Key=${apiKey}&Type=json&pIndex=1&pSize=50`;
 
   const res = await fetch(apiUrl);
@@ -26,4 +25,14 @@ export const fetchShelterAnimals = async (
   });
 
   return filtered.slice(0, 3);
+};
+
+export const fetchAllShelterAnimals = async (): Promise<ShelterAnimal[]> => {
+  const apiKey = import.meta.env.VITE_API_KEY;
+  const apiUrl = `https://openapi.gg.go.kr/AbdmAnimalProtect?Key=${apiKey}&Type=json&pIndex=1&pSize=50`;
+
+  const res = await fetch(apiUrl);
+  const data = await res.json();
+
+  return data.AbdmAnimalProtect[1].row as ShelterAnimal[];
 };

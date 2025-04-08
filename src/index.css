@@ -126,6 +126,7 @@
   margin: 0 auto;
 }
 .btn_black {
+  display: inline-block;
   margin: 20px auto 0;
   padding: 10px 24px;
   background: #000;
