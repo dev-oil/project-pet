@@ -1,4 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap');
+@import 'tailwindcss';
+
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+}
 
 /* 공통 컴포넌트 */
 .header {
@@ -119,6 +124,7 @@
   margin: 0 auto;
 }
 .btn_black {
+  display: inline-block;
   margin: 20px auto 0;
   padding: 10px 24px;
   background: #000;
@@ -160,6 +166,7 @@
   text-align: center;
 }
 .main_container .title {
+  font-weight: 700;
   font-size: 60px;
 }
 .main_container .sub_title {
@@ -340,6 +347,7 @@
 }
 
 .about_container .content_title {
+  font-weight: 700;
   font-size: 50px;
 }
 .about_container .content_desc {
@@ -365,6 +373,7 @@
 }
 .shelter_container .title {
   font-size: 40px;
+  font-weight: 700;
   text-align: center;
 }
 .shelter_container .sub_title {
@@ -402,7 +411,7 @@
 }
 
 .shelter_container .shelter_title {
-  font-size: 1.8rem;
+  font-size: 20px;
   margin-bottom: 8px;
   color: #444;
 }

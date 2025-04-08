@@ -1,0 +1,98 @@
+{
+  "ENFP": {
+    "category": "[개]",
+    "name": "포메라니안",
+    "description": "밝고 에너지가 넘치는 포메라니안은 ENFP의 활발한 성격과 잘 맞아요!",
+    "image": "images/pomeranian.jpg"
+  },
+  "ENTP": {
+    "category": "[개]",
+    "name": "웰시코기",
+    "description": "장난기 많고 호기심 강한 웰시코기는 ENTP와 찰떡궁합!",
+    "image": "images/corgi.jpg"
+  },
+  "ESFP": {
+    "category": "[개]",
+    "name": "비숑 프리제",
+    "description": "사람을 좋아하고 애교 많은 비숑은 사교적인 ESFP에게 딱 맞아요!",
+    "image": "images/bichon.jpg"
+  },
+  "ESTP": {
+    "category": "[개]",
+    "name": "믹스견",
+    "description": "다양한 성격과 개성이 있는 믹스견은 ESTP처럼 개방적인 성향과 잘 맞아요!",
+    "image": "images/mixdog.jpg"
+  },
+  "ISTJ": {
+    "category": "[개]",
+    "name": "진도견",
+    "description": "충성심이 강하고 독립적인 진도견은 신뢰감 있는 ISTJ와 잘 어울려요!",
+    "image": "images/jindo.jpg"
+  },
+  "INFJ": {
+    "category": "[개]",
+    "name": "말티즈",
+    "description": "감성적이고 헌신적인 INFJ는 애정 많은 말티즈와 잘 어울려요!",
+    "image": "images/maltese.jpg"
+  },
+  "INFP": {
+    "category": "[고양이]",
+    "name": "먼치킨",
+    "description": "감성적이고 귀여운 먼치킨은 부드러운 INFP와 잘 맞아요!",
+    "image": "images/munchkin.jpg"
+  },
+  "INTJ": {
+    "category": "[고양이]",
+    "name": "러시안 블루",
+    "description": "조용하고 신비로운 러시안 블루는 INTJ와 찰떡궁합이에요!",
+    "image": "images/russian_blue.jpg"
+  },
+  "ISFJ": {
+    "category": "[기타축종]",
+    "name": "브리티시 쇼트헤어",
+    "description": "차분하고 온순한 브리티시는 ISFJ의 따뜻한 성향과 잘 맞아요!",
+    "image": "images/british_shorthair.jpg"
+  },
+  "ISTP": {
+    "category": "[고양이]",
+    "name": "한국 고양이",
+    "description": "독립적이고 영리한 성격의 한국 고양이는 ISTP와 찰떡궁합이에요!",
+    "image": "images/korean_cat.jpg"
+  },
+  "ENFJ": {
+    "category": "[기타축종]",
+    "name": "앵무새",
+    "description": "사람과 교감을 잘하는 앵무새는 사교적인 ENFJ에게 적합해요!",
+    "image": "images/parrot.jpg"
+  },
+  "ESFJ": {
+    "category": "[개]",
+    "name": "골든 리트리버",
+    "description": "사람을 좋아하고 헌신적인 성격이라 ESFJ와 궁합이 좋아요!",
+    "image": "images/golden_retriever.jpg"
+  },
+  "INTP": {
+    "category": "[기타축종]",
+    "name": "햄스터",
+    "description": "독립적인 성향의 햄스터는 INTP처럼 혼자 있는 걸 좋아하는 사람과 잘 맞아요!",
+    "image": "images/hamster.jpg"
+  },
+  "ISFP": {
+    "category": "[기타축종]",
+    "name": "토끼",
+    "description": "온순하고 차분한 토끼는 감성적인 ISFP와 어울려요!",
+    "image": "images/rabbit.jpg"
+  },
+  "ENTJ": {
+    "category": "[개]",
+    "name": "보더콜리",
+    "description": "영리하고 활발하며 문제 해결 능력이 뛰어난 보더콜리는 ENTJ와 잘 어울려요!",
+    "image": "images/bordercollie.jpg"
+  },
+  "ESTJ": {
+    "category": "[개]",
+    "name": "도베르만",
+    "description": "강한 리더십과 충성심 있는 도베르만은 ESTJ와 잘 맞아요!",
+    "image": "images/doberman.jpg"
+  }
+}
