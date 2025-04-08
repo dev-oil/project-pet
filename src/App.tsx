@@ -4,7 +4,7 @@ import { AboutPage } from './pages/AboutPage';
 import { TestPage } from './pages/TestPage';
 import { ResultPage } from './pages/ResultPage';
 import { AnimalsPage } from './pages/AnimalsPage';
-
+import { AnimalsDetailPage } from './pages/AnimalsDetailPage';
 import './App.css';
 import { Layout } from './components/Layout';
 
@@ -18,6 +18,7 @@ function App() {
           <Route path='/test' element={<TestPage />} />
           <Route path='/result' element={<ResultPage />} />
           <Route path='/animals' element={<AnimalsPage />} />
+          <Route path='/animals/:id' element={<AnimalsDetailPage />} />
         </Routes>
       </Layout>
     </Router>
