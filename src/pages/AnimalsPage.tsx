@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { fetchAllShelterAnimals, ShelterAnimal } from '../services/shelterAPI';
 
-export const SheltersPage = () => {
+export const AnimalsPage = () => {
   const [animals, setAnimals] = useState<ShelterAnimal[]>([]);
 
   useEffect(() => {
