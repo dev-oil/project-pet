@@ -130,7 +130,7 @@ export const ResultPage = () => {
           </ul>
         </div>
 
-        <Link to='/shelters' className='btn_black'>
+        <Link to='/animals' className='btn_black'>
           더 많은 유기동물 보러가기
         </Link>
       </section>

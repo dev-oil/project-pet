@@ -29,10 +29,10 @@ export const Header = () => {
             <Link to='/about'>소개</Link>
           </li>
           <li>
-            <Link to='/test'>MBTI 테스트</Link>
+            <Link to='/test'>펫BTI 테스트</Link>
           </li>
           <li>
-            <Link to='/shelters'>보호소 정보</Link>
+            <Link to='/animals'>유기동물 정보</Link>
           </li>
         </ul>
       </nav>

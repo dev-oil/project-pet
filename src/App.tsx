@@ -3,8 +3,8 @@ import { HomePage } from './pages/HomePage';
 import { AboutPage } from './pages/AboutPage';
 import { TestPage } from './pages/TestPage';
 import { ResultPage } from './pages/ResultPage';
-import { SheltersPage } from './pages/SheltersPage';
-
+import { AnimalsPage } from './pages/AnimalsPage';
+import { AnimalsDetailPage } from './pages/AnimalsDetailPage';
 import './App.css';
 import { Layout } from './components/Layout';
 
@@ -17,7 +17,8 @@ function App() {
           <Route path='/about' element={<AboutPage />} />
           <Route path='/test' element={<TestPage />} />
           <Route path='/result' element={<ResultPage />} />
-          <Route path='/shelters' element={<SheltersPage />} />
+          <Route path='/animals' element={<AnimalsPage />} />
+          <Route path='/animals/:id' element={<AnimalsDetailPage />} />
         </Routes>
       </Layout>
     </Router>
