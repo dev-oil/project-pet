@@ -2,10 +2,10 @@ import { useState } from 'react';
 import questions from '../data/questions.json';
 import { useNavigate } from 'react-router-dom';
 
-type Question = {
-  question: string;
-  options: { text: string; value: string }[];
-};
+// type Question = {
+//   question: string;
+//   options: { text: string; value: string }[];
+// };
 
 export const TestPage = () => {
   const [current, setCurrent] = useState(0); // 몇번째 질문인지
