@@ -39,7 +39,7 @@ export const AnimalsDetailPage = () => {
           { offset: new window.kakao.maps.Point(25, 45) }
         );
 
-        const marker = new window.kakao.maps.Marker({
+        new window.kakao.maps.Marker({
           position: shelterPosition,
           image: markerImage,
           map,
