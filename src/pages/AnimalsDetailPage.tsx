@@ -200,7 +200,7 @@ export const AnimalsDetailPage = () => {
                 </li>
               </ul>
             </div>
-            <div className='mt-[30px] py-[40px] px-[20px] shadow-md rounded-2xl'>
+            <div className='mt-[30px] py-[40px] px-[20px] rounded-2xl border-1'>
               <p className='text-xl text-center font-bold'>
                 💭 함께할 친구를 기다리고 있어요 💭
               </p>

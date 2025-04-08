@@ -36,10 +36,16 @@
     "image": "images/maltese.jpg"
   },
   "INFP": {
+    "category": "[기타축종]",
+    "name": "토끼",
+    "description": "온순하고 차분한 토끼는 감성적인 INFP와 어울려요!",
+    "image": "images/rabbit.jpg"
+  },
+  "ISFP": {
     "category": "[고양이]",
-    "name": "먼치킨",
-    "description": "감성적이고 귀여운 먼치킨은 부드러운 INFP와 잘 맞아요!",
-    "image": "images/munchkin.jpg"
+    "name": "믹스묘",
+    "description": "자연스럽고 유연한 ISFP는 예측 불가능하고 자유로운 성향의 믹스묘와 잘어울려요!",
+    "image": "images/mixcat.jpg"
   },
   "INTJ": {
     "category": "[고양이]",
@@ -76,12 +82,6 @@
     "name": "햄스터",
     "description": "독립적인 성향의 햄스터는 INTP처럼 혼자 있는 걸 좋아하는 사람과 잘 맞아요!",
     "image": "images/hamster.jpg"
-  },
-  "ISFP": {
-    "category": "[기타축종]",
-    "name": "토끼",
-    "description": "온순하고 차분한 토끼는 감성적인 ISFP와 어울려요!",
-    "image": "images/rabbit.jpg"
   },
   "ENTJ": {
     "category": "[개]",

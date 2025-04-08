@@ -102,10 +102,22 @@ export const ResultPage = () => {
       </section>
       <section className='section'>
         <h2 className='title'>입양 가능한 유기동물</h2>
-        <p id='desc' className='desc'>
-          당신과 잘 맞는 <strong>{pet.name}</strong> 품종의 유기동물을
-          확인하세요!
-        </p>
+        {shelterAnimals.length > 0 ? (
+          <p id='desc' className='desc'>
+            당신과 잘 맞는 <strong>{pet.name}</strong> 유기동물을 확인하세요!
+          </p>
+        ) : (
+          <div className='no_match'>
+            <p className='desc'>
+              <strong>정확히 일치하는 품종은 찾지 못했어요!</strong>
+              <br />
+              대신, 친구가 되어줄 준비가 된 사랑스러운 아이들을 대신
+              추천드릴게요 💛
+              <br />
+              마음이 이끄는 대로, 새로운 친구를 만나보세요 🐾
+            </p>
+          </div>
+        )}
         <div className='summary'>
           <ul className='summary_list'>
             {shelterAnimals.map((animal) => {
@@ -117,12 +129,6 @@ export const ResultPage = () => {
                   <div className='info_box'>
                     <span className='name'>{animal.SPECIES_NM}</span>
                     <span className='shelter'>{animal.SHTER_NM}</span>
-                    <a
-                      href={`tel:${animal.SHTER_TELNO}`}
-                      className='shelter_number'
-                    >
-                      {animal.SHTER_TELNO}
-                    </a>
                   </div>
                 </li>
               );
