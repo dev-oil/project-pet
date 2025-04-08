@@ -306,7 +306,7 @@ body {
 }
 .result_container .summary_list {
   display: flex;
-  gap: 10px;
+  gap: 30px;
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
@@ -314,6 +314,7 @@ body {
 .result_container .summary_list .info_box {
   display: flex;
   flex-direction: column;
+  margin-top: 20px;
 }
 
 /***************** about *****************/
@@ -371,6 +372,7 @@ body {
 
 /***************** shelter *****************/
 .shelter_container {
+  max-width: 1400px;
   padding: 40px 20px;
 }
 .shelter_container .title {
@@ -388,28 +390,98 @@ body {
   margin-top: 10px;
   text-align: center;
 }
-.shelter_container .shelter_list {
+.shelter_container .search_box {
+  max-width: 600px;
+  margin: 0 auto 20px;
+  text-align: center;
+}
+.shelter_container .search_input {
+  width: 100%;
+  padding: 10px 15px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+.shelter_container .filter_container {
   display: flex;
+  margin-top: 40px;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 10px;
+  margin-bottom: 20px;
   justify-content: center;
-  margin: 20px auto;
+}
+.shelter_container .search_input,
+.shelter_container .filter_container select {
+  padding: 8px 12px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  outline: none;
+}
+
+.shelter_container .search_input:focus,
+.shelter_container .filter_container select:focus {
+  border-color: #000;
+}
+
+.shelter_container .filter_reset_button {
+  padding: 8px 16px;
+  background-color: #f2f2f2;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.shelter_container .filter_reset_button:hover {
+  background-color: #e0e0e0;
+}
+
+.shelter_container .summary {
+  text-align: center;
+  margin: 20px auto 10px;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.shelter_container .pagination {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 50px auto 20px;
+  align-items: center;
+}
+
+.shelter_container .pagination button {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  border: 1px solid #ccc;
+}
+
+.shelter_container .shelter_list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 35px 25px;
+  justify-content: center;
+  margin: 40px auto 20px;
 }
 
 .shelter_container .shelter_item {
   background-color: #fff;
   padding: 20px;
   border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  width: 300px;
+  box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.1);
   text-align: center;
-  margin: 10px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .shelter_container .shelter_item:hover {
   transform: translateY(-5px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
 .shelter_container .shelter_title {
@@ -420,34 +492,10 @@ body {
 
 .shelter_container .shelter_image {
   width: 100%;
-  height: 200px;
+  height: 300px;
   object-fit: cover;
   border-radius: 8px;
   margin: 10px 0;
-}
-
-.shelter_container .shelter_address,
-.shelter_container .shelter_species,
-.shelter_container .shelter_info,
-.shelter_container .shelter_phone {
-  margin: 5px 0;
-  font-size: 1rem;
-  color: #666;
-}
-
-.shelter_container .shelter_info {
-  font-style: italic;
-}
-
-.shelter_container .shelter_phone {
-  font-weight: bold;
-  text-decoration: none;
-}
-
-.shelter_container .shelter_address,
-.shelter_container .shelter_species,
-.shelter_container .shelter_info {
-  font-size: 0.9rem;
 }
 
 @media screen and (max-width: 767px) {
