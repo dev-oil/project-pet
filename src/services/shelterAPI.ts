@@ -1,7 +1,7 @@
 export type ShelterAnimal = {
   ABDM_IDNTFY_NO: number;
   STATE_NM: string;
-  SIGUN_CD: string;
+  SIGUN_NM: string;
   IMAGE_COURS: string;
   SPECIES_NM: string;
   COLOR_NM: string;

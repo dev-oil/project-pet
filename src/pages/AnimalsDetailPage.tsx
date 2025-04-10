@@ -3,8 +3,11 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'yet-another-react-lightbox/styles.css';
 
 import { Link, useLocation } from 'react-router-dom';
+
 import { fetchAllShelterAnimals, ShelterAnimal } from '../services/shelterAPI';
+
 import { useEffect, useRef, useState } from 'react';
+
 import { loadKakaoMapScript } from '../utils/kakaoMapUtils';
 
 import markerIMG from '/images/marker.png';
@@ -118,7 +121,7 @@ export const AnimalsDetailPage = () => {
   }, [animal.SPECIES_NM, animal.ABDM_IDNTFY_NO]);
 
   return (
-    <main className='container py-[30px] lg:py-[60px]'>
+    <main className='py-[30px] lg:py-[60px]'>
       <section>
         <div className='flex flex-col lg:flex-row gap-10 px-[20px] lg:px-[40px]'>
           <div className='flex justify-center items-center w-full lg:w-1/2'>
@@ -146,19 +149,19 @@ export const AnimalsDetailPage = () => {
             <div className='mt-[30px] space-y-[5px]'>
               <ul className='space-y-2'>
                 <li className='flex'>
-                  <span className='flex-[0_0_100px] text-lg text-gray-400'>
+                  <span className='flex-[0_0_110px] text-lg text-gray-400'>
                     상태{' '}
                   </span>
                   <span className='text-lg'>{animal.STATE_NM}</span>
                 </li>
                 <li className='flex'>
-                  <span className='flex-[0_0_100px] text-lg text-gray-400'>
+                  <span className='flex-[0_0_110px] text-lg text-gray-400'>
                     특징{' '}
                   </span>
                   <span className='text-lg'>{animal.SFETR_INFO}</span>
                 </li>
                 <li className='flex'>
-                  <span className='flex-[0_0_100px] text-lg text-gray-400'>
+                  <span className='flex-[0_0_110px] text-lg text-gray-400'>
                     중성화 여부{' '}
                   </span>
                   <span className='text-lg'>
@@ -170,25 +173,31 @@ export const AnimalsDetailPage = () => {
                   </span>
                 </li>
                 <li className='flex'>
-                  <span className='flex-[0_0_100px] text-lg text-gray-400'>
+                  <span className='flex-[0_0_110px] text-lg text-gray-400'>
                     나이{' '}
                   </span>
                   <span className='text-lg'>{animal.AGE_INFO}</span>
                 </li>
                 <li className='flex'>
-                  <span className='flex-[0_0_100px] text-lg text-gray-400'>
+                  <span className='flex-[0_0_110px] text-lg text-gray-400'>
+                    몸무게{' '}
+                  </span>
+                  <span className='text-lg'>{animal.BDWGH_INFO}</span>
+                </li>
+                <li className='flex'>
+                  <span className='flex-[0_0_110px] text-lg text-gray-400'>
                     보호소{' '}
                   </span>
                   <span className='text-lg'>{animal.SHTER_NM}</span>
                 </li>
                 <li className='flex'>
-                  <span className='flex-[0_0_100px] text-lg text-gray-400'>
+                  <span className='flex-[0_0_110px] text-lg text-gray-400'>
                     주소{' '}
                   </span>
                   <span className='text-lg'>{animal.REFINE_ROADNM_ADDR}</span>
                 </li>
                 <li className='flex'>
-                  <span className='flex-[0_0_100px] text-lg text-gray-400'>
+                  <span className='flex-[0_0_110px] text-lg text-gray-400'>
                     연락처{' '}
                   </span>
                   <a
