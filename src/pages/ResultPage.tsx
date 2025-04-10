@@ -1,7 +1,9 @@
+import { motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+
 import animals from '../data/animals.json';
 import { fetchShelterAnimals, ShelterAnimal } from '../services/shelterAPI';
-import { useEffect, useState } from 'react';
 
 // 타입 정의
 type MBTILetter = 'E' | 'I' | 'S' | 'N' | 'T' | 'F' | 'J' | 'P';
@@ -75,18 +77,30 @@ export const ResultPage = () => {
   }, [pet.name]);
 
   return (
-    <main className='container result_container'>
-      <section className='section'>
-        <h2 className='title'>
-          당신의 펫BTI 유형은? <span className='result'>{mbti}</span>
+    <main className='max-w-[1200px] m-auto'>
+      <motion.section
+        className='flex flex-col justify-center items-center min-h-screen px-5 py-[50px] text-center'
+        initial={{ opacity: 0, y: 70 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <h2 className='pb-[15px] text-[30px] font-bold border-b border-[#999]'>
+          당신의 펫BTI 유형은?{' '}
+          <span className='text-[40px] font-black'>{mbti}</span>
         </h2>
-        <strong className='sub_title'>추천 반려동물</strong>
-        <div className='recommendation_area'>
-          <div className='pet_card' key={pet.name}>
-            <strong className='pet'>{pet.name}</strong>
-            <p className='desc'>{pet.description}</p>
-            <div className='img_box'>
-              <img src={pet.image} alt={pet.name} />
+        <strong className='mt-[15px] text-[20px] text-[#999]'>
+          추천 반려동물
+        </strong>
+        <div className=''>
+          <div className='' key={pet.name}>
+            <strong className='block mt-[5px] text-[25px]'>{pet.name}</strong>
+            <p className='mt-[10px]'>{pet.description}</p>
+            <div className='w-[200px] h-[200px] mt-[20px] mx-auto rounded-[12px] overflow-hidden object-cover shadow-[5px_5px_20px_rgba(0,0,0,0.1)] transition-transform duration-300 ease-in-out hover:scale-105'>
+              <img
+                src={pet.image}
+                alt={pet.name}
+                className='w-full h-full object-cover'
+              />
             </div>
           </div>
         </div>
@@ -99,16 +113,23 @@ export const ResultPage = () => {
         >
           다시 시작하기
         </button>
-      </section>
-      <section className='section'>
-        <h2 className='title'>입양 가능한 유기동물</h2>
+      </motion.section>
+      <motion.section
+        className='flex flex-col justify-center items-center min-h-screen px-5 py-[50px] text-center border-t border-black '
+        initial={{ opacity: 0, y: 70 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.5 }}
+      >
+        <h2 className='pb-[15px] text-[30px] font-bold border-b border-[#999]'>
+          입양 가능한 유기동물
+        </h2>
         {shelterAnimals.length > 0 ? (
-          <p id='desc' className='desc'>
+          <p className='mt-[10px]'>
             당신과 잘 맞는 <strong>{pet.name}</strong> 유기동물을 확인하세요!
           </p>
         ) : (
-          <div className='no_match'>
-            <p className='desc'>
+          <div className=''>
+            <p className='mt-[10px]'>
               <strong>정확히 일치하는 품종은 찾지 못했어요!</strong>
               <br />
               대신, 친구가 되어줄 준비가 된 사랑스러운 아이들을 대신
@@ -118,17 +139,17 @@ export const ResultPage = () => {
             </p>
           </div>
         )}
-        <div className='summary'>
-          <ul className='summary_list'>
+        <div className=''>
+          <ul className='flex flex-wrap gap-[30px] items-center justify-center'>
             {shelterAnimals.map((animal) => {
               return (
-                <li className='list_item' key={animal.ABDM_IDNTFY_NO}>
-                  <div className='img_box'>
+                <li className='' key={animal.ABDM_IDNTFY_NO}>
+                  <div className='w-[200px] h-[200px] mt-[20px] mx-auto rounded-[12px] overflow-hidden object-cover shadow-[5px_5px_20px_rgba(0,0,0,0.1)] transition-transform duration-300 ease-in-out hover:scale-105'>
                     <img src={animal.IMAGE_COURS} alt='' />
                   </div>
-                  <div className='info_box'>
-                    <span className='name'>{animal.SPECIES_NM}</span>
-                    <span className='shelter'>{animal.SHTER_NM}</span>
+                  <div className='flex flex-col mt-[20px]'>
+                    <span className=''>{animal.SPECIES_NM}</span>
+                    <span className=''>{animal.SHTER_NM}</span>
                   </div>
                 </li>
               );
@@ -139,7 +160,7 @@ export const ResultPage = () => {
         <Link to='/animals' className='btn_black'>
           더 많은 유기동물 보러가기
         </Link>
-      </section>
+      </motion.section>
     </main>
   );
 };
