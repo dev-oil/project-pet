@@ -145,7 +145,11 @@ export const ResultPage = () => {
               return (
                 <li className='' key={animal.ABDM_IDNTFY_NO}>
                   <div className='w-[200px] h-[200px] mt-[20px] mx-auto rounded-[12px] overflow-hidden object-cover shadow-[5px_5px_20px_rgba(0,0,0,0.1)] transition-transform duration-300 ease-in-out hover:scale-105'>
-                    <img src={animal.IMAGE_COURS} alt='' />
+                    <img
+                      src={animal.IMAGE_COURS}
+                      alt=''
+                      className='w-full h-full object-cover'
+                    />
                   </div>
                   <div className='flex flex-col mt-[20px]'>
                     <span className=''>{animal.SPECIES_NM}</span>
