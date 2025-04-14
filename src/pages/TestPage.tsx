@@ -14,7 +14,7 @@ import { MBTILetter } from '../types/mbti';
 export const TestPage = () => {
   const [current, setCurrent] = useState(0); // 몇번째 질문인지
   const [selected, setSelected] = useState<string | null>(null); // 사용자 선택 보기
-  const { addAnswer, resetAnswers } = usePetBTIStore();
+  const { addAnswer } = usePetBTIStore();
 
   const navigate = useNavigate();
 
