@@ -1,3 +1,4 @@
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { IoMdHeartEmpty } from 'react-icons/io';
 import { Link } from 'react-router-dom';
@@ -5,7 +6,6 @@ import { Link } from 'react-router-dom';
 import { fetchAllShelterAnimals, ShelterAnimal } from '../services/shelterAPI';
 
 export const AnimalsPage = () => {
-  const [animals, setAnimals] = useState<ShelterAnimal[]>([]);
   const [filteredAnimals, setFilteredAnimals] = useState<ShelterAnimal[]>([]);
 
   const [searchKeyword, setSearchKeyword] = useState('');
@@ -17,15 +17,10 @@ export const AnimalsPage = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 12;
 
-  useEffect(() => {
-    const loadAnimals = async () => {
-      const result = await fetchAllShelterAnimals();
-      setAnimals(result);
-      setFilteredAnimals(result);
-    };
-
-    loadAnimals();
-  }, []);
+  const { data: animals } = useSuspenseQuery({
+    queryKey: ['allShelterAnimals'],
+    queryFn: fetchAllShelterAnimals,
+  });
 
   useEffect(() => {
     const keyword = searchKeyword.toLowerCase();
