@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import questions from '../data/questions.json';
+import { usePetBTIStore } from '../stores/petBTIStore';
+import { MBTILetter } from '../types/mbti';
 
 // type Question = {
 //   question: string;
@@ -12,24 +14,19 @@ import questions from '../data/questions.json';
 export const TestPage = () => {
   const [current, setCurrent] = useState(0); // 몇번째 질문인지
   const [selected, setSelected] = useState<string | null>(null); // 사용자 선택 보기
-  const [answers, setAnswers] = useState<string[]>([]); // 사용자 전체 답변
+  const { addAnswer, resetAnswers } = usePetBTIStore();
 
   const navigate = useNavigate();
 
   const handleNext = () => {
     if (!selected) return;
 
-    setAnswers((prev) => [...prev, selected]); // 답변에 추가
-    setSelected(null); // 선택 초기화하기
+    addAnswer(selected as MBTILetter); // 기존 상태에 추가
+    setSelected(null);
 
     if (current + 1 < questions.length) {
       setCurrent(current + 1);
     } else {
-      // 마지막 질문이면?
-      localStorage.setItem(
-        'userAnswers',
-        JSON.stringify([...answers, selected])
-      );
       navigate('/result');
     }
   };

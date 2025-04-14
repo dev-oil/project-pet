@@ -4,26 +4,9 @@ import { Link, useNavigate } from 'react-router-dom';
 
 import animals from '../data/animals.json';
 import { fetchShelterAnimals, ShelterAnimal } from '../services/shelterAPI';
+import { usePetBTIStore } from '../stores/petBTIStore';
+import { MBTIType } from '../types/mbti';
 
-// 타입 정의
-type MBTILetter = 'E' | 'I' | 'S' | 'N' | 'T' | 'F' | 'J' | 'P';
-type MBTIType =
-  | 'ENFP'
-  | 'ENTP'
-  | 'ESFP'
-  | 'ESTP'
-  | 'ISTJ'
-  | 'INFJ'
-  | 'INFP'
-  | 'INTJ'
-  | 'ISFJ'
-  | 'ISTP'
-  | 'ENFJ'
-  | 'ESFJ'
-  | 'INTP'
-  | 'ISFP'
-  | 'ENTJ'
-  | 'ESTJ';
 type Animal = {
   category: string;
   name: string;
@@ -38,29 +21,8 @@ export const ResultPage = () => {
   const navigate = useNavigate();
 
   const animal = animals as AnimalsMap;
-  const rawAnswers = localStorage.getItem('userAnswers');
-  const answers: string[] = rawAnswers ? JSON.parse(rawAnswers) : [];
-
-  const mbtiScores: Record<MBTILetter, number> = {
-    E: 0,
-    I: 0,
-    S: 0,
-    N: 0,
-    T: 0,
-    F: 0,
-    J: 0,
-    P: 0,
-  };
-
-  answers.forEach((value) => {
-    mbtiScores[value as MBTILetter]++;
-  });
-
-  const mbti =
-    (mbtiScores['E'] > mbtiScores['I'] ? 'E' : 'I') +
-    (mbtiScores['S'] > mbtiScores['N'] ? 'S' : 'N') +
-    (mbtiScores['T'] > mbtiScores['F'] ? 'T' : 'F') +
-    (mbtiScores['J'] > mbtiScores['P'] ? 'J' : 'P');
+  const { getMBTI, resetAnswers } = usePetBTIStore();
+  const mbti = getMBTI();
 
   const mbtiTyped = mbti as MBTIType;
   const pet = animal[mbtiTyped];
@@ -107,7 +69,7 @@ export const ResultPage = () => {
         <button
           className='btn_black'
           onClick={() => {
-            localStorage.clear();
+            resetAnswers();
             navigate('/test');
           }}
         >
