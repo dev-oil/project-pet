@@ -1,42 +1,23 @@
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import animals from '../data/animals.json';
-import { fetchShelterAnimals, ShelterAnimal } from '../services/shelterAPI';
+import { fetchShelterAnimals } from '../services/shelterAPI';
 import { usePetBTIStore } from '../stores/petBTIStore';
 import { MBTIType } from '../types/mbti';
-
-type Animal = {
-  category: string;
-  name: string;
-  description: string;
-  image: string;
-};
-type AnimalsMap = {
-  [key in MBTIType]: Animal;
-};
 
 export const ResultPage = () => {
   const navigate = useNavigate();
 
-  const animal = animals as AnimalsMap;
   const { getMBTI, resetAnswers } = usePetBTIStore();
   const mbti = getMBTI();
+  const pet = animals[mbti as MBTIType];
 
-  const mbtiTyped = mbti as MBTIType;
-  const pet = animal[mbtiTyped];
-
-  const [shelterAnimals, setShelterAnimals] = useState<ShelterAnimal[]>([]);
-
-  useEffect(() => {
-    const loadShelters = async () => {
-      const result = await fetchShelterAnimals(pet.name);
-      setShelterAnimals(result);
-    };
-
-    loadShelters();
-  }, [pet.name]);
+  const { data: shelterAnimals } = useSuspenseQuery({
+    queryKey: ['shelterAnimals', pet.name],
+    queryFn: () => fetchShelterAnimals(pet.name),
+  });
 
   return (
     <main className='max-w-[1200px] m-auto'>

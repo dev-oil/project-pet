@@ -5,7 +5,7 @@ import { AboutPage } from './pages/AboutPage';
 import { AnimalsDetailPage } from './pages/AnimalsDetailPage';
 import { AnimalsPage } from './pages/AnimalsPage';
 import { HomePage } from './pages/HomePage';
-import { ResultPage } from './pages/ResultPage';
+import { ResultPageWrapper } from './pages/ResultPageWrapper';
 import { TestPage } from './pages/TestPage';
 import './App.css';
 
@@ -17,7 +17,7 @@ function App() {
           <Route path='/' element={<HomePage />} />
           <Route path='/about' element={<AboutPage />} />
           <Route path='/test' element={<TestPage />} />
-          <Route path='/result' element={<ResultPage />} />
+          <Route path='/result' element={<ResultPageWrapper />} />
           <Route path='/animals' element={<AnimalsPage />} />
           <Route path='/animals/:id' element={<AnimalsDetailPage />} />
         </Routes>
