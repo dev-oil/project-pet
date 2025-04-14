@@ -25,7 +25,6 @@ body {
 .header .logo_link {
   display: block;
 }
-
 .header .nav {
   position: absolute;
   top: 100%;
@@ -38,28 +37,30 @@ body {
   box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.1);
   display: none;
 }
-
 .header .nav ul {
   list-style: none;
   padding: 0;
   margin: 0;
 }
-
 .header .nav ul li {
-  padding: 10px;
   text-align: center;
 }
-
-.header .nav ul li a {
+.header .nav ul li a,
+.header .nav ul li button {
+  display: block;
+  padding: 10px;
   text-decoration: none;
   color: black;
   font-size: 1.2rem;
   font-weight: 600;
-  display: block;
   transition: color 0.3s ease-in-out;
 }
-
-.header .nav ul li a:hover {
+.header .nav ul li button {
+  width: 100%;
+  cursor: pointer;
+}
+.header .nav ul li a:hover,
+.header .nav ul li button:hover {
   color: gray;
 }
 
@@ -71,7 +72,6 @@ body {
   justify-content: space-between;
   cursor: pointer;
 }
-
 .hamburger span {
   display: block;
   width: 100%;
@@ -79,19 +79,15 @@ body {
   background: black;
   transition: all 0.3s ease-in-out;
 }
-
 .hamburger.is_show span:nth-child(1) {
   transform: translateY(10px) rotate(45deg);
 }
-
 .hamburger.is_show span:nth-child(2) {
   opacity: 0;
 }
-
 .hamburger.is_show span:nth-child(3) {
   transform: translateY(-10px) rotate(-45deg);
 }
-
 .nav.is_show {
   display: block;
   animation: fadeIn 0.3s ease-in-out;

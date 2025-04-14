@@ -1,10 +1,23 @@
 import { useState } from 'react';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 
 import logo from '/images/logo.gif';
 
+import { usePetBTIStore } from '../stores/petBTIStore';
+
 export const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
+  const { answers } = usePetBTIStore();
+
+  const handleTestClick = () => {
+    if (answers.length === 4) {
+      navigate('/result'); // 테스트 완료 시 결과로
+    } else {
+      navigate('/test'); // 그 외에는 테스트 시작
+    }
+    setIsOpen(false); // 메뉴 닫기
+  };
 
   return (
     <header className='header'>
@@ -30,7 +43,7 @@ export const Header = () => {
             <Link to='/about'>소개</Link>
           </li>
           <li>
-            <Link to='/test'>펫BTI 테스트</Link>
+            <button onClick={handleTestClick}>펫BTI 테스트</button>
           </li>
           <li>
             <Link to='/animals'>유기동물 정보</Link>
