@@ -2,10 +2,10 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 
-import animals from '../data/animals.json';
-import { fetchShelterAnimals } from '../services/shelterAPI';
-import { usePetBTIStore } from '../stores/petBTIStore';
-import { MBTIType } from '../types/mbti';
+import animals from '../../data/animals.json';
+import { fetchShelterAnimals } from '../../services/shelterAPI';
+import { usePetBTIStore } from '../../stores/petBTIStore';
+import { MBTIType } from '../../types/mbti';
 
 export const ResultPage = () => {
   const navigate = useNavigate();

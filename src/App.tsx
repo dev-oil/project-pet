@@ -1,12 +1,12 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import { Layout } from './components/Layout';
-import { AboutPage } from './pages/AboutPage';
-import { AnimalsDetailPage } from './pages/AnimalsDetailPage';
-import { AnimalsPageWrapper } from './pages/AnimalsPageWrapper';
-import { HomePage } from './pages/HomePage';
-import { ResultPageWrapper } from './pages/ResultPageWrapper';
-import { TestPage } from './pages/TestPage';
+import { AboutPage } from './pages/About/AboutPage';
+import { AnimalsDetailPage } from './pages/Animals/AnimalsDetailPage';
+import { AnimalsPageWrapper } from './pages/Animals/AnimalsPageWrapper';
+import { HomePage } from './pages/Home/HomePage';
+import { ResultPageWrapper } from './pages/Result/ResultPageWrapper';
+import { TestPage } from './pages/Test/TestPage';
 import './App.css';
 
 function App() {

@@ -3,7 +3,10 @@ import { useEffect, useState } from 'react';
 import { IoMdHeartEmpty } from 'react-icons/io';
 import { Link } from 'react-router-dom';
 
-import { fetchAllShelterAnimals, ShelterAnimal } from '../services/shelterAPI';
+import {
+  fetchAllShelterAnimals,
+  ShelterAnimal,
+} from '../../services/shelterAPI';
 
 export const AnimalsPage = () => {
   const [filteredAnimals, setFilteredAnimals] = useState<ShelterAnimal[]>([]);
