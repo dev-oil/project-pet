@@ -2,9 +2,9 @@ import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import questions from '../../data/questions.json';
-import { usePetBTIStore } from '../../stores/petBTIStore';
-import { MBTILetter } from '../../types/mbti';
+import questions from '../data/questions.json';
+import { usePetBTIStore } from '../stores/petBTIStore';
+import { MBTILetter } from '../types/mbti';
 
 // type Question = {
 //   question: string;

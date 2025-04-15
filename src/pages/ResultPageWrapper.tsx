@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
-import { ErrorFallback } from '../../components/ErrorFallback';
+import { ErrorFallback } from './ErrorFallback';
 import { ResultPage } from './ResultPage';
 import { ResultSkeleton } from './ResultSkeleton';
 
