@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Layout } from './components/Layout';
 import { AboutPage } from './pages/AboutPage';
 import { AnimalsDetailPage } from './pages/AnimalsDetailPage';
-import { AnimalsPageWrapper } from './pages/AnimalsPageWrapper';
+import { AnimalsPage } from './pages/AnimalsPage';
 import { HomePage } from './pages/HomePage';
 import { ResultPageWrapper } from './pages/ResultPageWrapper';
 import { TestPage } from './pages/TestPage';
@@ -18,7 +18,7 @@ function App() {
           <Route path='/about' element={<AboutPage />} />
           <Route path='/test' element={<TestPage />} />
           <Route path='/result' element={<ResultPageWrapper />} />
-          <Route path='/animals' element={<AnimalsPageWrapper />} />
+          <Route path='/animals' element={<AnimalsPage />} />
           <Route path='/animals/:id' element={<AnimalsDetailPage />} />
         </Routes>
       </Layout>
