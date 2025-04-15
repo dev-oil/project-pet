@@ -1,11 +1,16 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { IoMdHeartEmpty } from 'react-icons/io';
 import { Link } from 'react-router-dom';
 
-import { fetchAllShelterAnimals } from '../../services/shelterAPI';
+import {
+  fetchAllShelterAnimals,
+  ShelterAnimal,
+} from '../../services/shelterAPI';
 
 export const AnimalsPage = () => {
+  const [filteredAnimals, setFilteredAnimals] = useState<ShelterAnimal[]>([]);
+
   const [searchKeyword, setSearchKeyword] = useState('');
   const [animalType, setAnimalType] = useState('');
   const [gender, setGender] = useState('');
@@ -20,10 +25,10 @@ export const AnimalsPage = () => {
     queryFn: fetchAllShelterAnimals,
   });
 
-  const filteredAnimals = useMemo(() => {
+  useEffect(() => {
     const keyword = searchKeyword.toLowerCase();
 
-    return animals.filter((animal) => {
+    const result = animals.filter((animal) => {
       const matchKeyword =
         animal.SPECIES_NM.toLowerCase().includes(keyword) ||
         animal.SHTER_NM.toLowerCase().includes(keyword);
@@ -44,11 +49,10 @@ export const AnimalsPage = () => {
         matchRegion
       );
     });
-  }, [searchKeyword, animalType, gender, neutered, region, animals]);
 
-  useEffect(() => {
+    setFilteredAnimals(result);
     setCurrentPage(1);
-  }, [searchKeyword, animalType, gender, neutered, region]);
+  }, [searchKeyword, animalType, gender, neutered, region, animals]);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
