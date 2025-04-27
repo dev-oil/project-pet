@@ -3,8 +3,6 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import questions from '../data/questions.json';
-import { usePetBTIStore } from '../stores/petBTIStore';
-import { MBTILetter } from '../types/mbti';
 
 // type Question = {
 //   question: string;
@@ -14,20 +12,49 @@ import { MBTILetter } from '../types/mbti';
 export const TestPage = () => {
   const [current, setCurrent] = useState(0); // 몇번째 질문인지
   const [selected, setSelected] = useState<string | null>(null); // 사용자 선택 보기
-  const { addAnswer } = usePetBTIStore();
+  const [answers, setAnswers] = useState<string[]>([]); // 전체 답변 저장
 
   const navigate = useNavigate();
+
+  // MBTI 계산 함수
+  const getMBTI = (answers: string[]): string => {
+    const score: Record<string, number> = {
+      E: 0,
+      I: 0,
+      S: 0,
+      N: 0,
+      T: 0,
+      F: 0,
+      J: 0,
+      P: 0,
+    };
+
+    answers.forEach((letter) => {
+      score[letter]++;
+    });
+
+    const result =
+      (score.E >= score.I ? 'E' : 'I') +
+      (score.S >= score.N ? 'S' : 'N') +
+      (score.T >= score.F ? 'T' : 'F') +
+      (score.J >= score.P ? 'J' : 'P');
+
+    return result;
+  };
 
   const handleNext = () => {
     if (!selected) return;
 
-    addAnswer(selected as MBTILetter); // 기존 상태에 추가
+    const newAnswers = [...answers, selected];
+    setAnswers(newAnswers);
     setSelected(null);
 
     if (current + 1 < questions.length) {
       setCurrent(current + 1);
     } else {
-      navigate('/result');
+      const mbti = getMBTI(newAnswers);
+      localStorage.setItem('resultMBTI', mbti);
+      navigate('/result', { state: { mbti } });
     }
   };
 
@@ -70,7 +97,7 @@ export const TestPage = () => {
           })}
         </div>
         <button onClick={handleNext} disabled={!selected} className='btn_black'>
-          다음
+          {current + 1 === questions.length ? '결과 보기' : '다음'}
         </button>
       </motion.section>
     </main>

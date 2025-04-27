@@ -17,3 +17,11 @@ export type MBTIType =
   | 'ISFP'
   | 'ENTJ'
   | 'ESTJ';
+
+export type Question = {
+  question: string;
+  options: {
+    text: string;
+    value: MBTILetter;
+  }[];
+};

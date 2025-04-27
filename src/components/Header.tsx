@@ -3,19 +3,21 @@ import { Link, useNavigate } from 'react-router';
 
 import logo from '/images/logo.gif';
 
-import { usePetBTIStore } from '../stores/petBTIStore';
+import { MBTIType } from '../types/mbti';
 
 export const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
-  const { answers } = usePetBTIStore();
 
   const handleTestClick = () => {
-    if (answers.length === 4) {
-      navigate('/result'); // 테스트 완료 시 결과로
+    const mbti = localStorage.getItem('resultMBTI') as MBTIType | null;
+
+    if (mbti) {
+      navigate('/result', { state: { mbti } }); // 결과 페이지로 이동 (상태도 넘겨줌)
     } else {
-      navigate('/test'); // 그 외에는 테스트 시작
+      navigate('/test');
     }
+
     setIsOpen(false); // 메뉴 닫기
   };
 
