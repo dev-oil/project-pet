@@ -1,11 +1,11 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import { Layout } from './components/Layout';
-import { AboutPage } from './pages/AboutPage';
+import { AboutPage } from './pages/About/AboutPage';
 import { AnimalsPageWrapper } from './pages/Animals/AnimalsPageWrapper';
 import { AnimalsDetailPageWrapper } from './pages/AnimalsDetail/AnimalsDetailPageWrapper';
-import { HomePage } from './pages/HomePage';
-import { ResultPage } from './pages/ResultPage';
+import { HomePage } from './pages/Home/HomePage';
+import { ResultPage } from './pages/Result/ResultPage';
 import { TestPage } from './pages/TestPage';
 import './App.css';
 

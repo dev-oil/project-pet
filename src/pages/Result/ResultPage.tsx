@@ -3,9 +3,9 @@ import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
-import animals from '../data/animals.json';
-import { fetchShelterAnimals } from '../services/shelterAPI';
-import { MBTIType } from '../types/mbti';
+import animals from '../../data/animals.json';
+import { fetchShelterAnimals } from '../../services/shelterAPI';
+import { MBTIType } from '../../types/mbti';
 
 type Animal = {
   category: string;
