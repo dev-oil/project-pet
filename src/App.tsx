@@ -2,8 +2,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import { Layout } from './components/Layout';
 import { AboutPage } from './pages/AboutPage';
-import { AnimalsDetailPage } from './pages/Animals/AnimalsDetailPage';
 import { AnimalsPageWrapper } from './pages/Animals/AnimalsPageWrapper';
+import { AnimalsDetailPageWrapper } from './pages/AnimalsDetail/AnimalsDetailPageWrapper';
 import { HomePage } from './pages/HomePage';
 import { ResultPage } from './pages/ResultPage';
 import { TestPage } from './pages/TestPage';
@@ -19,7 +19,7 @@ function App() {
           <Route path='/test' element={<TestPage />} />
           <Route path='/result' element={<ResultPage />} />
           <Route path='/animals' element={<AnimalsPageWrapper />} />
-          <Route path='/animals/:id' element={<AnimalsDetailPage />} />
+          <Route path='/animals/:id' element={<AnimalsDetailPageWrapper />} />
         </Routes>
       </Layout>
     </Router>

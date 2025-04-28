@@ -20,7 +20,9 @@ export const AnimalsDetailPage = () => {
   const animal = location.state as ShelterAnimal;
 
   const mapRef = useRef<HTMLDivElement>(null);
+
   const [similarAnimals, setSimilarAnimals] = useState<ShelterAnimal[]>([]);
+  const [isSimilarAnimalsLoading, setIsSimilarAnimalsLoading] = useState(true);
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -105,18 +107,19 @@ export const AnimalsDetailPage = () => {
 
         if (sameSpecies.length >= 10) {
           setSimilarAnimals(sameSpecies.slice(0, 10));
-          return;
+        } else {
+          const sameCategory = all.filter(
+            (item) =>
+              item.SPECIES_NM.startsWith(category ?? '') &&
+              item.SPECIES_NM !== animal.SPECIES_NM &&
+              item.ABDM_IDNTFY_NO !== animal.ABDM_IDNTFY_NO
+          );
+          setSimilarAnimals([...sameSpecies, ...sameCategory].slice(0, 10));
         }
-
-        const sameCategory = all.filter(
-          (item) =>
-            item.SPECIES_NM.startsWith(category ?? '') &&
-            item.SPECIES_NM !== animal.SPECIES_NM &&
-            item.ABDM_IDNTFY_NO !== animal.ABDM_IDNTFY_NO
-        );
-        setSimilarAnimals([...sameSpecies, ...sameCategory].slice(0, 10));
       } catch (err) {
         console.error('비슷한 동물 불러오기 실패:', err);
+      } finally {
+        setIsSimilarAnimalsLoading(false);
       }
     };
 
@@ -216,41 +219,53 @@ export const AnimalsDetailPage = () => {
               <p className='text-xl text-center font-bold'>
                 💭 함께할 친구를 기다리고 있어요 💭
               </p>
-              <Swiper
-                className='mt-[30px]'
-                spaceBetween={20}
-                slidesPerView={2}
-                breakpoints={{
-                  768: { slidesPerView: 2.5 },
-                  1024: { slidesPerView: 3.5 },
-                }}
-              >
-                {similarAnimals.map((item) => (
-                  <SwiperSlide key={item.ABDM_IDNTFY_NO}>
-                    <Link
-                      to={`/animals/${item.ABDM_IDNTFY_NO}`}
-                      state={item}
-                      className='block'
-                    >
-                      <img
-                        src={item.IMAGE_COURS}
-                        alt={item.SPECIES_NM}
-                        className='rounded-md h-[150px] lg:h-[100px] w-full object-cover'
+              <div className='mt-[30px]'>
+                {isSimilarAnimalsLoading ? (
+                  <div className='grid grid-cols-2 md:grid-cols-3 gap-4'>
+                    {Array.from({ length: 3 }).map((_, idx) => (
+                      <div
+                        key={idx}
+                        className='h-[100px] bg-gray-200 animate-pulse rounded-md'
                       />
-                      <div className='mt-2 text-sm font-semibold text-center'>
-                        <span>{item.SPECIES_NM}</span>∙
-                        <span>
-                          {item.SEX_NM === 'F'
-                            ? '여아'
-                            : item.SEX_NM === 'M'
-                            ? '남아'
-                            : '성별 정보 없음'}
-                        </span>
-                      </div>
-                    </Link>
-                  </SwiperSlide>
-                ))}
-              </Swiper>
+                    ))}
+                  </div>
+                ) : (
+                  <Swiper
+                    spaceBetween={20}
+                    slidesPerView={2}
+                    breakpoints={{
+                      768: { slidesPerView: 2.5 },
+                      1024: { slidesPerView: 3.5 },
+                    }}
+                  >
+                    {similarAnimals.map((item) => (
+                      <SwiperSlide key={item.ABDM_IDNTFY_NO}>
+                        <Link
+                          to={`/animals/${item.ABDM_IDNTFY_NO}`}
+                          state={item}
+                          className='group'
+                        >
+                          <img
+                            src={item.IMAGE_COURS}
+                            alt={item.SPECIES_NM}
+                            className='rounded-md h-[150px] lg:h-[100px] w-full object-cover border border-transparent group-hover:border-black transition'
+                          />
+                          <div className='mt-2 text-sm font-semibold text-center'>
+                            <span>{item.SPECIES_NM}</span>∙
+                            <span>
+                              {item.SEX_NM === 'F'
+                                ? '여아'
+                                : item.SEX_NM === 'M'
+                                ? '남아'
+                                : '성별 정보 없음'}
+                            </span>
+                          </div>
+                        </Link>
+                      </SwiperSlide>
+                    ))}
+                  </Swiper>
+                )}
+              </div>
             </div>
           </div>
         </div>

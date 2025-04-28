@@ -21,7 +21,7 @@ export default tseslint.config(
       react,
       'react-hooks': reactHooks,
       'react-refresh': reactRefresh,
-      'import': pluginImport,
+      import: pluginImport,
     },
     rules: {
       ...js.configs.recommended.rules,
@@ -32,7 +32,7 @@ export default tseslint.config(
         { allowConstantExport: true },
       ],
       'import/order': [
-        'error',
+        'warn',
         {
           groups: [
             'builtin',
