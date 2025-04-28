@@ -4,11 +4,14 @@ import 'yet-another-react-lightbox/styles.css';
 
 import { Link, useLocation } from 'react-router-dom';
 
-import { fetchAllShelterAnimals, ShelterAnimal } from '../services/shelterAPI';
+import {
+  fetchAllShelterAnimals,
+  ShelterAnimal,
+} from '../../services/shelterAPI';
 
 import { useEffect, useRef, useState } from 'react';
 
-import { loadKakaoMapScript } from '../utils/kakaoMapUtils';
+import { loadKakaoMapScript } from '../../utils/kakaoMapUtils';
 
 import markerIMG from '/images/marker.png';
 
