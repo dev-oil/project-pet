@@ -6,7 +6,7 @@ import { AnimalsPageWrapper } from './pages/Animals/AnimalsPageWrapper';
 import { AnimalsDetailPageWrapper } from './pages/AnimalsDetail/AnimalsDetailPageWrapper';
 import { HomePage } from './pages/Home/HomePage';
 import { ResultPage } from './pages/Result/ResultPage';
-import { TestPage } from './pages/TestPage';
+import { TestPage } from './pages/Test/TestPage';
 import './App.css';
 
 function App() {

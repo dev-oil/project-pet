@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 import animals from '../../data/animals.json';
@@ -89,7 +89,14 @@ export const ResultPage = () => {
         </h2>
 
         {isLoading ? (
-          <p className='mt-10'>유기동물을 불러오는 중입니다...</p>
+          <div className='flex flex-wrap gap-[30px] items-center justify-center mt-6'>
+            {Array.from({ length: 3 }).map((_, idx) => (
+              <div
+                key={idx}
+                className='w-[200px] h-[200px] bg-gray-200 animate-pulse rounded-[12px]'
+              />
+            ))}
+          </div>
         ) : shelterAnimals.length > 0 ? (
           <p className='mt-[10px]'>
             당신과 잘 맞는 <strong>{pet.name}</strong> 유기동물을 확인하세요!
