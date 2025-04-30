@@ -48,17 +48,14 @@ export const AnimalsDetailPage = () => {
         item.ABDM_IDNTFY_NO !== animal.ABDM_IDNTFY_NO
     );
 
-    if (sameSpecies.length >= 10) {
-      return sameSpecies.slice(0, 10);
-    } else {
-      const sameCategory = animals.filter(
-        (item) =>
-          item.SPECIES_NM.startsWith(category ?? '') &&
-          item.SPECIES_NM !== animal.SPECIES_NM &&
-          item.ABDM_IDNTFY_NO !== animal.ABDM_IDNTFY_NO
-      );
-      return [...sameSpecies, ...sameCategory].slice(0, 10);
-    }
+    const sameCategory = animals.filter(
+      (item) =>
+        item.SPECIES_NM.startsWith(category ?? '') &&
+        item.SPECIES_NM !== animal.SPECIES_NM &&
+        item.ABDM_IDNTFY_NO !== animal.ABDM_IDNTFY_NO
+    );
+
+    return [...sameSpecies, ...sameCategory].slice(0, 10);
   }, [animals, animal]);
 
   useEffect(() => {
