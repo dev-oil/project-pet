@@ -33,13 +33,14 @@ export const TestPage = () => {
       score[letter]++;
     });
 
-    const result =
-      (score.E >= score.I ? 'E' : 'I') +
-      (score.S >= score.N ? 'S' : 'N') +
-      (score.T >= score.F ? 'T' : 'F') +
-      (score.J >= score.P ? 'J' : 'P');
+    const pairs: [string, string][] = [
+      ['E', 'I'],
+      ['S', 'N'],
+      ['T', 'F'],
+      ['J', 'P'],
+    ];
 
-    return result;
+    return pairs.map(([a, b]) => (score[a] >= score[b] ? a : b)).join('');
   };
 
   const handleNext = () => {
