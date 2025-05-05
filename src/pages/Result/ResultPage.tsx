@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
-import { useEffect } from 'react';
 import { Link, Navigate, useLocation } from 'react-router-dom';
 
 import animals from '../../data/animals.json';
@@ -24,8 +23,6 @@ export const ResultPage = () => {
     location.state?.mbti ||
     (localStorage.getItem('resultMBTI') as MBTIType | null);
 
-  if (!mbti) return <Navigate to='/test' replace />;
-
   const pet = (animals as AnimalsMap)[mbti as MBTIType];
 
   // shelterAnimals 불러오기
@@ -34,6 +31,8 @@ export const ResultPage = () => {
     queryFn: () => fetchShelterAnimals(pet.name),
     enabled: !!pet,
   });
+
+  if (!mbti) return <Navigate to='/test' replace />;
 
   return (
     <main className='max-w-[1200px] m-auto'>
