@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { useEffect } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useLocation } from 'react-router-dom';
 
 import animals from '../../data/animals.json';
 import { fetchShelterAnimals } from '../../services/shelterAPI';
@@ -19,21 +19,14 @@ type AnimalsMap = {
 };
 
 export const ResultPage = () => {
-  const navigate = useNavigate();
   const location = useLocation();
-
   const mbti: MBTIType | null =
     location.state?.mbti ||
     (localStorage.getItem('resultMBTI') as MBTIType | null);
 
-  const pet = (animals as AnimalsMap)[mbti as MBTIType];
+  if (!mbti) return <Navigate to='/test' replace />;
 
-  // MBTI 없으면 홈으로 리다이렉트
-  useEffect(() => {
-    if (!mbti) {
-      navigate('/test');
-    }
-  }, [mbti, navigate]);
+  const pet = (animals as AnimalsMap)[mbti as MBTIType];
 
   // shelterAnimals 불러오기
   const { data: shelterAnimals = [], isLoading } = useQuery({
@@ -71,7 +64,10 @@ export const ResultPage = () => {
         <button
           className='btn_black mt-6'
           onClick={() => {
-            navigate('/test');
+            localStorage.removeItem('resultMBTI');
+            window.scrollTo({ top: 0 });
+            location.state = null;
+            window.location.href = '/test';
           }}
         >
           다시 시작하기
