@@ -13,6 +13,27 @@ import { loadKakaoMapScript } from '../../utils/kakaoMapUtils';
 
 import markerIMG from '/images/marker.png';
 
+const getSameSpecies = (animals: ShelterAnimal[], animal: ShelterAnimal) => {
+  return animals.filter(
+    (item) =>
+      item.SPECIES_NM === animal.SPECIES_NM &&
+      item.ABDM_IDNTFY_NO !== animal.ABDM_IDNTFY_NO
+  );
+};
+
+const getSameCategory = (
+  animals: ShelterAnimal[],
+  animal: ShelterAnimal,
+  category: string | undefined
+) => {
+  return animals.filter(
+    (item) =>
+      item.SPECIES_NM.startsWith(category ?? '') &&
+      item.SPECIES_NM !== animal.SPECIES_NM &&
+      item.ABDM_IDNTFY_NO !== animal.ABDM_IDNTFY_NO
+  );
+};
+
 export const AnimalsDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -41,19 +62,8 @@ export const AnimalsDetailPage = () => {
     if (!animal) return [];
 
     const category = animal.SPECIES_NM.match(/\[(.*?)\]/)?.[0];
-
-    const sameSpecies = animals.filter(
-      (item) =>
-        item.SPECIES_NM === animal.SPECIES_NM &&
-        item.ABDM_IDNTFY_NO !== animal.ABDM_IDNTFY_NO
-    );
-
-    const sameCategory = animals.filter(
-      (item) =>
-        item.SPECIES_NM.startsWith(category ?? '') &&
-        item.SPECIES_NM !== animal.SPECIES_NM &&
-        item.ABDM_IDNTFY_NO !== animal.ABDM_IDNTFY_NO
-    );
+    const sameSpecies = getSameSpecies(animals, animal);
+    const sameCategory = getSameCategory(animals, animal, category);
 
     return [...sameSpecies, ...sameCategory].slice(0, 10);
   }, [animals, animal]);
