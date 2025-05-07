@@ -63,9 +63,7 @@ export const ResultPage = () => {
         <button
           className='btn_black mt-6'
           onClick={() => {
-            localStorage.removeItem('resultMBTI');
             window.scrollTo({ top: 0 });
-            location.state = null;
             window.location.href = '/test';
           }}
         >
