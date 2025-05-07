@@ -50,6 +50,9 @@ export const Header = () => {
           <li>
             <Link to='/animals'>유기동물 정보</Link>
           </li>
+          <li>
+            <Link to='/favorites'>찜한 친구들</Link>
+          </li>
         </ul>
       </nav>
     </header>
