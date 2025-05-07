@@ -63,7 +63,6 @@ export const ResultPage = () => {
         <button
           className='btn_black mt-6'
           onClick={() => {
-            window.scrollTo({ top: 0 });
             window.location.href = '/test';
           }}
         >
