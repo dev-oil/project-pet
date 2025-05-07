@@ -1,10 +1,25 @@
 import { useState } from 'react';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 
 import logo from '/images/logo.gif';
 
+import { MBTIType } from '../types/mbti';
+
 export const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const handleTestClick = () => {
+    const mbti = localStorage.getItem('resultMBTI') as MBTIType | null;
+
+    if (mbti) {
+      navigate('/result', { state: { mbti } }); // 결과 페이지로 이동 (상태도 넘겨줌)
+    } else {
+      navigate('/test');
+    }
+
+    setIsOpen(false); // 메뉴 닫기
+  };
 
   return (
     <header className='header'>
@@ -30,7 +45,7 @@ export const Header = () => {
             <Link to='/about'>소개</Link>
           </li>
           <li>
-            <Link to='/test'>펫BTI 테스트</Link>
+            <button onClick={handleTestClick}>펫BTI 테스트</button>
           </li>
           <li>
             <Link to='/animals'>유기동물 정보</Link>

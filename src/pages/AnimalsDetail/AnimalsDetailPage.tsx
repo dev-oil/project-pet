@@ -1,30 +1,82 @@
-import Lightbox from 'yet-another-react-lightbox';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { Link, useParams, useNavigate, useLocation } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
+import Lightbox from 'yet-another-react-lightbox';
+import { useSuspenseQuery } from '@tanstack/react-query';
+
 import 'yet-another-react-lightbox/styles.css';
-
-import { Link, useLocation } from 'react-router-dom';
-
-import { fetchAllShelterAnimals, ShelterAnimal } from '../services/shelterAPI';
-
-import { useEffect, useRef, useState } from 'react';
-
-import { loadKakaoMapScript } from '../utils/kakaoMapUtils';
+import {
+  fetchAllShelterAnimals,
+  ShelterAnimal,
+} from '../../services/shelterAPI';
+import { loadKakaoMapScript } from '../../utils/kakaoMapUtils';
 
 import markerIMG from '/images/marker.png';
 
-export const AnimalsDetailPage = () => {
-  const location = useLocation();
-  const animal = location.state as ShelterAnimal;
+const getSameSpecies = (animals: ShelterAnimal[], animal: ShelterAnimal) => {
+  return animals.filter(
+    (item) =>
+      item.SPECIES_NM === animal.SPECIES_NM &&
+      item.ABDM_IDNTFY_NO !== animal.ABDM_IDNTFY_NO
+  );
+};
 
+const getSameCategory = (
+  animals: ShelterAnimal[],
+  animal: ShelterAnimal,
+  category: string | undefined
+) => {
+  return animals.filter(
+    (item) =>
+      item.SPECIES_NM.startsWith(category ?? '') &&
+      item.SPECIES_NM !== animal.SPECIES_NM &&
+      item.ABDM_IDNTFY_NO !== animal.ABDM_IDNTFY_NO
+  );
+};
+
+export const AnimalsDetailPage = () => {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const location = useLocation();
   const mapRef = useRef<HTMLDivElement>(null);
-  const [similarAnimals, setSimilarAnimals] = useState<ShelterAnimal[]>([]);
+
+  const { data: animals = [] } = useSuspenseQuery({
+    queryKey: ['shelterAnimals', 'all'],
+    queryFn: fetchAllShelterAnimals,
+  });
+
+  const numericId = id ? Number(id) : undefined;
+
+  // 먼저 state로 확인
+  const animalFromState = location.state as ShelterAnimal | undefined;
+
+  // 이후 params
+  const animal =
+    animalFromState ??
+    animals.find((item) => item.ABDM_IDNTFY_NO === numericId);
+
+  // 팝업
   const [open, setOpen] = useState(false);
 
+  const similarAnimals = useMemo(() => {
+    if (!animal) return [];
+
+    const category = animal.SPECIES_NM.match(/\[(.*?)\]/)?.[0];
+    const sameSpecies = getSameSpecies(animals, animal);
+    const sameCategory = getSameCategory(animals, animal, category);
+
+    return [...sameSpecies, ...sameCategory].slice(0, 10);
+  }, [animals, animal]);
+
   useEffect(() => {
+    if (!animal) {
+      navigate('/animals');
+      return;
+    }
+
     const initMap = async () => {
       try {
         await loadKakaoMapScript();
-
         if (!mapRef.current) return;
 
         const shelterPosition = new window.kakao.maps.LatLng(
@@ -49,25 +101,14 @@ export const AnimalsDetailPage = () => {
         });
 
         const content = `
-        <div style="
-          padding: 8px 12px;
-          background-color: white;
-          border-radius: 12px;
-          box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-          font-size: 14px;
-          color: #333;
-          white-space: nowrap;
-          text-align: center;
-        ">
-          ${animal.SHTER_NM}<br/>
-          <a href="https://map.kakao.com/link/map/${animal.SHTER_NM},${animal.REFINE_WGS84_LAT},${animal.REFINE_WGS84_LOGT}"
-            target="_blank"
-            style="color: #ff6699; text-decoration: underline;">
-            자세히 보기
-          </a>
-        </div>
-      `;
-
+          <div style="padding:8px 12px; background:white; border-radius:12px; box-shadow:0 2px 6px rgba(0,0,0,0.15); font-size:14px; text-align:center;">
+            ${animal.SHTER_NM}<br/>
+            <a href="https://map.kakao.com/link/map/${animal.SHTER_NM},${animal.REFINE_WGS84_LAT},${animal.REFINE_WGS84_LOGT}"
+               target="_blank"
+               style="color: #ff6699; text-decoration: underline;">
+               자세히 보기
+            </a>
+          </div>`;
         const overlay = new window.kakao.maps.CustomOverlay({
           content,
           position: shelterPosition,
@@ -81,44 +122,13 @@ export const AnimalsDetailPage = () => {
     };
 
     initMap();
-  }, [animal]);
+  }, [animal, navigate]);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [location]);
 
-  useEffect(() => {
-    const loadSimilarAnimals = async () => {
-      try {
-        const all = await fetchAllShelterAnimals();
-
-        const category = animal.SPECIES_NM.match(/\[(.*?)\]/)?.[0];
-
-        const sameSpecies = all.filter(
-          (item) =>
-            item.SPECIES_NM === animal.SPECIES_NM &&
-            item.ABDM_IDNTFY_NO !== animal.ABDM_IDNTFY_NO
-        );
-
-        if (sameSpecies.length >= 10) {
-          setSimilarAnimals(sameSpecies.slice(0, 10));
-          return;
-        }
-
-        const sameCategory = all.filter(
-          (item) =>
-            item.SPECIES_NM.startsWith(category ?? '') &&
-            item.SPECIES_NM !== animal.SPECIES_NM &&
-            item.ABDM_IDNTFY_NO !== animal.ABDM_IDNTFY_NO
-        );
-        setSimilarAnimals([...sameSpecies, ...sameCategory].slice(0, 10));
-      } catch (err) {
-        console.error('비슷한 동물 불러오기 실패:', err);
-      }
-    };
-
-    loadSimilarAnimals();
-  }, [animal.SPECIES_NM, animal.ABDM_IDNTFY_NO]);
+  if (!animal) return null;
 
   return (
     <main className='py-[30px] lg:py-[60px]'>
@@ -213,41 +223,53 @@ export const AnimalsDetailPage = () => {
               <p className='text-xl text-center font-bold'>
                 💭 함께할 친구를 기다리고 있어요 💭
               </p>
-              <Swiper
-                className='mt-[30px]'
-                spaceBetween={20}
-                slidesPerView={2}
-                breakpoints={{
-                  768: { slidesPerView: 2.5 },
-                  1024: { slidesPerView: 3.5 },
-                }}
-              >
-                {similarAnimals.map((item) => (
-                  <SwiperSlide key={item.ABDM_IDNTFY_NO}>
-                    <Link
-                      to={`/animals/${item.ABDM_IDNTFY_NO}`}
-                      state={item}
-                      className='block'
-                    >
-                      <img
-                        src={item.IMAGE_COURS}
-                        alt={item.SPECIES_NM}
-                        className='rounded-md h-[150px] lg:h-[100px] w-full object-cover'
+              <div className='mt-[30px]'>
+                {similarAnimals.length === 0 ? (
+                  <div className='grid grid-cols-2 md:grid-cols-3 gap-4'>
+                    {Array.from({ length: 3 }).map((_, idx) => (
+                      <div
+                        key={idx}
+                        className='h-[100px] bg-gray-200 animate-pulse rounded-md'
                       />
-                      <div className='mt-2 text-sm font-semibold text-center'>
-                        <span>{item.SPECIES_NM}</span>∙
-                        <span>
-                          {item.SEX_NM === 'F'
-                            ? '여아'
-                            : item.SEX_NM === 'M'
-                            ? '남아'
-                            : '성별 정보 없음'}
-                        </span>
-                      </div>
-                    </Link>
-                  </SwiperSlide>
-                ))}
-              </Swiper>
+                    ))}
+                  </div>
+                ) : (
+                  <Swiper
+                    spaceBetween={20}
+                    slidesPerView={2}
+                    breakpoints={{
+                      768: { slidesPerView: 2.5 },
+                      1024: { slidesPerView: 3.5 },
+                    }}
+                  >
+                    {similarAnimals.map((item) => (
+                      <SwiperSlide key={item.ABDM_IDNTFY_NO}>
+                        <Link
+                          to={`/animals/${item.ABDM_IDNTFY_NO}`}
+                          state={item}
+                          className='group'
+                        >
+                          <img
+                            src={item.IMAGE_COURS}
+                            alt={item.SPECIES_NM}
+                            className='rounded-md h-[150px] lg:h-[100px] w-full object-cover border border-transparent group-hover:border-black transition'
+                          />
+                          <div className='mt-2 text-sm font-semibold text-center'>
+                            <span>{item.SPECIES_NM}</span>∙
+                            <span>
+                              {item.SEX_NM === 'F'
+                                ? '여아'
+                                : item.SEX_NM === 'M'
+                                ? '남아'
+                                : '성별 정보 없음'}
+                            </span>
+                          </div>
+                        </Link>
+                      </SwiperSlide>
+                    ))}
+                  </Swiper>
+                )}
+              </div>
             </div>
           </div>
         </div>
