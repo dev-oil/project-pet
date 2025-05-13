@@ -1,7 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
-import { Link, Navigate, useLocation } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 
+import { useMbti } from '../../contexts/MbtiContext';
 import animals from '../../data/animals.json';
 import { fetchShelterAnimals } from '../../services/shelterAPI';
 import { MBTIType } from '../../types/mbti';
@@ -18,11 +19,7 @@ type AnimalsMap = {
 };
 
 export const ResultPage = () => {
-  const location = useLocation();
-  const mbti: MBTIType | null =
-    location.state?.mbti ||
-    (localStorage.getItem('resultMBTI') as MBTIType | null);
-
+  const { mbti } = useMbti();
   const pet = (animals as AnimalsMap)[mbti as MBTIType];
 
   // shelterAnimals 불러오기

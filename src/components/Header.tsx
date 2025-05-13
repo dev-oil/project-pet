@@ -3,17 +3,17 @@ import { Link, useNavigate } from 'react-router';
 
 import logo from '/images/logo.gif';
 
-import { MBTIType } from '../types/mbti';
+import { useMbti } from '../contexts/MbtiContext';
 
 export const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
 
-  const handleTestClick = () => {
-    const mbti = localStorage.getItem('resultMBTI') as MBTIType | null;
+  const { mbti } = useMbti();
 
+  const handleTestClick = () => {
     if (mbti) {
-      navigate('/result', { state: { mbti } }); // 결과 페이지로 이동 (상태도 넘겨줌)
+      navigate('/result'); // 상태 넘기지 않아도 항상 Context에서 최신 값 사용 가능
     } else {
       navigate('/test');
     }

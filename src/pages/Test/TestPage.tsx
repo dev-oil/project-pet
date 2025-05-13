@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { useMbti } from '../../contexts/MbtiContext';
 import questions from '../../data/questions.json';
 
 // type Question = {
@@ -13,6 +14,7 @@ export const TestPage = () => {
   const [current, setCurrent] = useState(0); // 몇번째 질문인지
   const [selected, setSelected] = useState<string | null>(null); // 사용자 선택 보기
   const [answers, setAnswers] = useState<string[]>([]); // 전체 답변 저장
+  const { setMbti } = useMbti();
 
   const navigate = useNavigate();
 
@@ -54,8 +56,8 @@ export const TestPage = () => {
       setCurrent(current + 1);
     } else {
       const mbti = getMBTI(newAnswers);
-      localStorage.setItem('resultMBTI', mbti);
-      navigate('/result', { state: { mbti } });
+      setMbti(mbti);
+      navigate('/result');
     }
   };
 
