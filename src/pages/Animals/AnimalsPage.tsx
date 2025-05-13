@@ -1,8 +1,9 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
-import { IoMdHeartEmpty } from 'react-icons/io';
+import { IoMdHeartEmpty, IoMdHeart } from 'react-icons/io';
 import { Link } from 'react-router-dom';
 
+import { useFavorite } from '../../contexts/FavoriteContext';
 import { fetchAllShelterAnimals } from '../../services/shelterAPI';
 
 const itemsPerPage = 12;
@@ -14,6 +15,8 @@ export const AnimalsPage = () => {
   const [neutered, setNeutered] = useState('');
   const [region, setRegion] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+
+  const { favorites, toggleFavorite } = useFavorite();
 
   const { data: animals } = useSuspenseQuery({
     queryKey: ['shelterAnimals', 'all'],
@@ -203,8 +206,13 @@ export const AnimalsPage = () => {
             <button
               className='absolute top-[30px] right-[30px] cursor-pointer'
               type='button'
+              onClick={() => toggleFavorite(animal.ABDM_IDNTFY_NO)}
             >
-              <IoMdHeartEmpty className='text-white' size={30} />
+              {favorites.includes(String(animal.ABDM_IDNTFY_NO)) ? (
+                <IoMdHeart className='text-pink-400' size={30} />
+              ) : (
+                <IoMdHeartEmpty className='text-white' size={30} />
+              )}
             </button>
           </li>
         ))}
