@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { useMbti } from '../../contexts/MbtiContext';
 import questions from '../../data/questions.json';
+import { MBTIType } from '../../types/mbti';
 
 // type Question = {
 //   question: string;
@@ -19,7 +20,7 @@ export const TestPage = () => {
   const navigate = useNavigate();
 
   // MBTI 계산 함수
-  const getMBTI = (answers: string[]): string => {
+  const getMBTI = (answers: string[]): MBTIType => {
     const score: Record<string, number> = {
       E: 0,
       I: 0,
