@@ -43,7 +43,9 @@ export const TestPage = () => {
       ['J', 'P'],
     ];
 
-    return pairs.map(([a, b]) => (score[a] >= score[b] ? a : b)).join('');
+    return pairs
+      .map(([a, b]) => (score[a] >= score[b] ? a : b))
+      .join('') as MBTIType;
   };
 
   const handleNext = () => {
