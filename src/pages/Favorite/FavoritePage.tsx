@@ -1,23 +1,12 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { useState } from 'react';
 import { IoMdHeart } from 'react-icons/io';
 import { Link } from 'react-router-dom';
 
+import { useFavorite } from '../../contexts/FavoriteContext';
 import { fetchAllShelterAnimals } from '../../services/shelterAPI';
-import {
-  getFavorites,
-  toggleFavorite,
-  saveFavorites,
-} from '../../utils/favoriteUtils';
 
 export const FavoritePage = () => {
-  const [favorites, setFavorites] = useState<string[]>(getFavorites());
-
-  const handleFavorite = (id: string | number) => {
-    const updated = toggleFavorite(id, favorites);
-    setFavorites(updated);
-    saveFavorites(updated);
-  };
+  const { favorites, toggleFavorite } = useFavorite();
 
   const { data: allAnimals } = useSuspenseQuery({
     queryKey: ['shelterAnimals'],
@@ -74,7 +63,7 @@ export const FavoritePage = () => {
               <button
                 className='absolute top-[30px] right-[30px] cursor-pointer'
                 type='button'
-                onClick={() => handleFavorite(animal.ABDM_IDNTFY_NO)}
+                onClick={() => toggleFavorite(animal.ABDM_IDNTFY_NO)}
               >
                 <IoMdHeart className='text-pink-400' size={30} />
               </button>
