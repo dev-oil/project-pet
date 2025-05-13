@@ -1,36 +1,35 @@
-import { useEffect, useState } from 'react';
-import { IoMdHeartEmpty } from 'react-icons/io';
+import { useSuspenseQuery } from '@tanstack/react-query';
+import { useMemo, useState } from 'react';
+import { IoMdHeartEmpty, IoMdHeart } from 'react-icons/io';
 import { Link } from 'react-router-dom';
 
-import { fetchAllShelterAnimals, ShelterAnimal } from '../services/shelterAPI';
+import { useFavorite } from '../../contexts/FavoriteContext';
+import { fetchAllShelterAnimals } from '../../services/shelterAPI';
+
+const itemsPerPage = 12;
 
 export const AnimalsPage = () => {
-  const [animals, setAnimals] = useState<ShelterAnimal[]>([]);
-  const [filteredAnimals, setFilteredAnimals] = useState<ShelterAnimal[]>([]);
-
   const [searchKeyword, setSearchKeyword] = useState('');
   const [animalType, setAnimalType] = useState('');
   const [gender, setGender] = useState('');
   const [neutered, setNeutered] = useState('');
   const [region, setRegion] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const [currentPage, setCurrentPage] = useState(0);
-  const itemsPerPage = 12;
+  const { favorites, toggleFavorite } = useFavorite();
 
-  useEffect(() => {
-    const loadAnimals = async () => {
-      const result = await fetchAllShelterAnimals();
-      setAnimals(result);
-      setFilteredAnimals(result);
-    };
+  const { data: animals } = useSuspenseQuery({
+    queryKey: ['shelterAnimals', 'all'],
+    queryFn: fetchAllShelterAnimals,
+  });
 
-    loadAnimals();
-  }, []);
+  // 필터링된 동물 리스트
+  const filteredAnimals = useMemo(() => {
+    if (!animals.length) return [];
 
-  useEffect(() => {
     const keyword = searchKeyword.toLowerCase();
 
-    const result = animals.filter((animal) => {
+    return animals.filter((animal) => {
       const matchKeyword =
         animal.SPECIES_NM.toLowerCase().includes(keyword) ||
         animal.SHTER_NM.toLowerCase().includes(keyword);
@@ -51,15 +50,18 @@ export const AnimalsPage = () => {
         matchRegion
       );
     });
+  }, [animals, searchKeyword, animalType, gender, neutered, region]);
 
-    setFilteredAnimals(result);
-    setCurrentPage(1);
-  }, [searchKeyword, animalType, gender, neutered, region, animals]);
+  // 현재 페이지 동물 리스트
+  const currentAnimals = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return filteredAnimals.slice(startIndex, startIndex + itemsPerPage);
+  }, [filteredAnimals, currentPage]);
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentAnimals = filteredAnimals.slice(startIndex, endIndex);
-  const totalPages = Math.ceil(filteredAnimals.length / itemsPerPage);
+  // 전체 페이지 수
+  const totalPages = useMemo(() => {
+    return Math.ceil(filteredAnimals.length / itemsPerPage);
+  }, [filteredAnimals]);
 
   return (
     <main className='relative max-w-[1400px] mx-auto px-[20px] py-[40px]'>
@@ -204,8 +206,13 @@ export const AnimalsPage = () => {
             <button
               className='absolute top-[30px] right-[30px] cursor-pointer'
               type='button'
+              onClick={() => toggleFavorite(animal.ABDM_IDNTFY_NO)}
             >
-              <IoMdHeartEmpty className='text-white' size={30} />
+              {favorites.includes(String(animal.ABDM_IDNTFY_NO)) ? (
+                <IoMdHeart className='text-pink-400' size={30} />
+              ) : (
+                <IoMdHeartEmpty className='text-white' size={30} />
+              )}
             </button>
           </li>
         ))}

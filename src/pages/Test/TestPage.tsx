@@ -2,7 +2,9 @@ import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import questions from '../data/questions.json';
+import { useMbti } from '../../contexts/MbtiContext';
+import questions from '../../data/questions.json';
+import { MBTIType } from '../../types/mbti';
 
 // type Question = {
 //   question: string;
@@ -12,24 +14,52 @@ import questions from '../data/questions.json';
 export const TestPage = () => {
   const [current, setCurrent] = useState(0); // 몇번째 질문인지
   const [selected, setSelected] = useState<string | null>(null); // 사용자 선택 보기
-  const [answers, setAnswers] = useState<string[]>([]); // 사용자 전체 답변
+  const [answers, setAnswers] = useState<string[]>([]); // 전체 답변 저장
+  const { setMbti } = useMbti();
 
   const navigate = useNavigate();
+
+  // MBTI 계산 함수
+  const getMBTI = (answers: string[]): MBTIType => {
+    const score: Record<string, number> = {
+      E: 0,
+      I: 0,
+      S: 0,
+      N: 0,
+      T: 0,
+      F: 0,
+      J: 0,
+      P: 0,
+    };
+
+    answers.forEach((letter) => {
+      score[letter]++;
+    });
+
+    const pairs: [string, string][] = [
+      ['E', 'I'],
+      ['S', 'N'],
+      ['T', 'F'],
+      ['J', 'P'],
+    ];
+
+    return pairs
+      .map(([a, b]) => (score[a] >= score[b] ? a : b))
+      .join('') as MBTIType;
+  };
 
   const handleNext = () => {
     if (!selected) return;
 
-    setAnswers((prev) => [...prev, selected]); // 답변에 추가
-    setSelected(null); // 선택 초기화하기
+    const newAnswers = [...answers, selected];
+    setAnswers(newAnswers);
+    setSelected(null);
 
     if (current + 1 < questions.length) {
       setCurrent(current + 1);
     } else {
-      // 마지막 질문이면?
-      localStorage.setItem(
-        'userAnswers',
-        JSON.stringify([...answers, selected])
-      );
+      const mbti = getMBTI(newAnswers);
+      setMbti(mbti);
       navigate('/result');
     }
   };
@@ -73,7 +103,7 @@ export const TestPage = () => {
           })}
         </div>
         <button onClick={handleNext} disabled={!selected} className='btn_black'>
-          다음
+          {current + 1 === questions.length ? '결과 보기' : '다음'}
         </button>
       </motion.section>
     </main>

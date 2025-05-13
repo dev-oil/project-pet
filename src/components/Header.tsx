@@ -1,10 +1,25 @@
 import { useState } from 'react';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 
 import logo from '/images/logo.gif';
 
+import { useMbti } from '../contexts/MbtiContext';
+
 export const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const { mbti } = useMbti();
+
+  const handleTestClick = () => {
+    if (mbti) {
+      navigate('/result'); // 상태 넘기지 않아도 항상 Context에서 최신 값 사용 가능
+    } else {
+      navigate('/test');
+    }
+
+    setIsOpen(false); // 메뉴 닫기
+  };
 
   return (
     <header className='header'>
@@ -30,10 +45,13 @@ export const Header = () => {
             <Link to='/about'>소개</Link>
           </li>
           <li>
-            <Link to='/test'>펫BTI 테스트</Link>
+            <button onClick={handleTestClick}>펫BTI 테스트</button>
           </li>
           <li>
             <Link to='/animals'>유기동물 정보</Link>
+          </li>
+          <li>
+            <Link to='/favorites'>찜한 친구들</Link>
           </li>
         </ul>
       </nav>
