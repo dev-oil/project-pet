@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
-export const AboutPage = () => {
+const AboutPage = () => {
   return (
     <main className='w-full mx-auto text-center'>
       <motion.section
@@ -80,3 +80,5 @@ export const AboutPage = () => {
     </main>
   );
 };
+
+export default AboutPage;

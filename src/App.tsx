@@ -3,13 +3,13 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Layout } from './components/Layout';
 import { FavoriteProvider } from './contexts/FavoriteContext';
 import { MbtiProvider } from './contexts/MbtiContext';
-import { AboutPage } from './pages/About/AboutPage';
-import { AnimalsPageWrapper } from './pages/Animals/AnimalsPageWrapper';
-import { AnimalsDetailPageWrapper } from './pages/AnimalsDetail/AnimalsDetailPageWrapper';
-import { FavoritePageWrapper } from './pages/Favorite/FavoritePageWrapper';
-import { HomePage } from './pages/Home/HomePage';
-import { ResultPage } from './pages/Result/ResultPage';
-import { TestPage } from './pages/Test/TestPage';
+import AboutPage from './pages/About/AboutPage';
+import AnimalsPageWrapper from './pages/Animals/AnimalsPage';
+import AnimalsDetailPageWrapper from './pages/AnimalsDetail/AnimalsDetailPage';
+import FavoritePageWrapper from './pages/Favorite/FavoritePage';
+import HomePage from './pages/Home/HomePage';
+import ResultPage from './pages/Result/ResultPage';
+import TestPage from './pages/Test/TestPage';
 
 import './App.css';
 

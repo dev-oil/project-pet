@@ -1,14 +1,17 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { useMemo, useState } from 'react';
+import { Suspense, useMemo, useState } from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
 import { IoMdHeartEmpty, IoMdHeart } from 'react-icons/io';
 import { Link } from 'react-router-dom';
 
+import { ErrorFallback } from '../../components/ErrorFallback';
+import { Skeleton } from '../../components/Skeleton';
 import { useFavorite } from '../../contexts/FavoriteContext';
 import { fetchAllShelterAnimals } from '../../services/shelterAPI';
 
 const itemsPerPage = 12;
 
-export const AnimalsPage = () => {
+const AnimalsPage = () => {
   const [searchKeyword, setSearchKeyword] = useState('');
   const [animalType, setAnimalType] = useState('');
   const [gender, setGender] = useState('');
@@ -244,3 +247,15 @@ export const AnimalsPage = () => {
     </main>
   );
 };
+
+const AnimalsPageWrapper = () => {
+  return (
+    <ErrorBoundary FallbackComponent={ErrorFallback}>
+      <Suspense fallback={<Skeleton />}>
+        <AnimalsPage />
+      </Suspense>
+    </ErrorBoundary>
+  );
+};
+
+export default AnimalsPageWrapper;

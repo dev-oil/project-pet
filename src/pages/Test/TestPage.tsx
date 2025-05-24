@@ -11,7 +11,7 @@ import { MBTIType } from '../../types/mbti';
 //   options: { text: string; value: string }[];
 // };
 
-export const TestPage = () => {
+const TestPage = () => {
   const [current, setCurrent] = useState(0); // 몇번째 질문인지
   const [selected, setSelected] = useState<string | null>(null); // 사용자 선택 보기
   const [answers, setAnswers] = useState<string[]>([]); // 전체 답변 저장
@@ -109,3 +109,5 @@ export const TestPage = () => {
     </main>
   );
 };
+
+export default TestPage;
