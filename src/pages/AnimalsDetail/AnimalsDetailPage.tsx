@@ -1,10 +1,13 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useSuspenseQuery } from '@tanstack/react-query';
+import { Suspense, useEffect, useMemo, useRef, useState } from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
 import { Link, useParams, useNavigate, useLocation } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import Lightbox from 'yet-another-react-lightbox';
-import { useSuspenseQuery } from '@tanstack/react-query';
 
 import 'yet-another-react-lightbox/styles.css';
+import { ErrorFallback } from '../../components/ErrorFallback';
+import { Skeleton } from '../../components/Skeleton';
 import {
   fetchAllShelterAnimals,
   ShelterAnimal,
@@ -34,7 +37,7 @@ const getSameCategory = (
   );
 };
 
-export const AnimalsDetailPage = () => {
+const AnimalsDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const location = useLocation();
@@ -289,3 +292,15 @@ export const AnimalsDetailPage = () => {
     </main>
   );
 };
+
+const AnimalsDetailPageWrapper = () => {
+  return (
+    <ErrorBoundary FallbackComponent={ErrorFallback}>
+      <Suspense fallback={<Skeleton />}>
+        <AnimalsDetailPage />
+      </Suspense>
+    </ErrorBoundary>
+  );
+};
+
+export default AnimalsDetailPageWrapper;

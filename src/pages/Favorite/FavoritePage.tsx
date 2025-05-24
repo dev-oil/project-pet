@@ -1,11 +1,15 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
+import { Suspense } from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
 import { IoMdHeart } from 'react-icons/io';
 import { Link } from 'react-router-dom';
 
+import { ErrorFallback } from '../../components/ErrorFallback';
+import { Skeleton } from '../../components/Skeleton';
 import { useFavorite } from '../../contexts/FavoriteContext';
 import { fetchAllShelterAnimals } from '../../services/shelterAPI';
 
-export const FavoritePage = () => {
+const FavoritePage = () => {
   const { favorites, toggleFavorite } = useFavorite();
 
   const { data: allAnimals } = useSuspenseQuery({
@@ -74,3 +78,15 @@ export const FavoritePage = () => {
     </main>
   );
 };
+
+const FavoritePageWrapper = () => {
+  return (
+    <ErrorBoundary FallbackComponent={ErrorFallback}>
+      <Suspense fallback={<Skeleton />}>
+        <FavoritePage />
+      </Suspense>
+    </ErrorBoundary>
+  );
+};
+
+export default FavoritePageWrapper;

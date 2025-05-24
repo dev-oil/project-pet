@@ -18,7 +18,7 @@ type AnimalsMap = {
   [key in MBTIType]: Animal;
 };
 
-export const ResultPage = () => {
+const ResultPage = () => {
   const { mbti } = useMbti();
   const pet = (animals as AnimalsMap)[mbti as MBTIType];
 
@@ -125,3 +125,5 @@ export const ResultPage = () => {
     </main>
   );
 };
+
+export default ResultPage;

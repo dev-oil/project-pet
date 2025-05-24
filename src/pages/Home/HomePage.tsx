@@ -10,7 +10,7 @@ const imageList = [
   '/images/hamster.jpg',
 ];
 
-export const HomePage = () => {
+const HomePage = () => {
   const [currentImage, setCurrentImage] = useState(imageList[0]);
   const imgBoxRef = useRef<HTMLDivElement>(null);
 
@@ -80,3 +80,5 @@ export const HomePage = () => {
     </main>
   );
 };
+
+export default HomePage;
