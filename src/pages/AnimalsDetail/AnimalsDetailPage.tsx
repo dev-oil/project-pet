@@ -10,6 +10,7 @@ import { ErrorFallback } from '../../components/ErrorFallback';
 import { Skeleton } from '../../components/Skeleton';
 import { fetchAllShelterAnimals, AnimalData } from '../../api/shelterAPI';
 import { loadKakaoMapScript } from '../../utils/kakaoMapUtils';
+import { getSpeciesName } from '../../utils/speciesUtils';
 
 import markerIMG from '/images/marker.png';
 
@@ -130,7 +131,7 @@ const AnimalsDetailPage = () => {
 
           <div className='flex flex-col justify-center w-full lg:w-1/2'>
             <h2 className='text-3xl font-bold'>
-              {animal.SPECIES_NM} |{' '}
+              {getSpeciesName(animal.SPECIES_NM)} |{' '}
               {animal.SEX_NM === 'F'
                 ? '여아'
                 : animal.SEX_NM === 'M'
@@ -236,7 +237,7 @@ const AnimalsDetailPage = () => {
                             className='rounded-md h-[150px] lg:h-[100px] w-full object-cover border border-transparent group-hover:border-black transition'
                           />
                           <div className='mt-2 text-sm font-semibold text-center'>
-                            <span>{item.SPECIES_NM}</span>∙
+                            <span>{getSpeciesName(item.SPECIES_NM)}</span>∙
                             <span>
                               {item.SEX_NM === 'F'
                                 ? '여아'

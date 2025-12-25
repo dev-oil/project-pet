@@ -8,12 +8,12 @@ import { ErrorFallback } from '../../components/ErrorFallback';
 import { Skeleton } from '../../components/Skeleton';
 import { useFavorite } from '../../contexts/FavoriteContext';
 import { fetchAllShelterAnimals } from '../../api/shelterAPI';
+import { getSpeciesName } from '../../utils/speciesUtils';
 
 const itemsPerPage = 12;
 
 const AnimalsPage = () => {
   const [searchKeyword, setSearchKeyword] = useState('');
-  const [animalType, setAnimalType] = useState('');
   const [gender, setGender] = useState('');
   const [neutered, setNeutered] = useState('');
   const [region, setRegion] = useState('');
@@ -33,27 +33,19 @@ const AnimalsPage = () => {
     const keyword = searchKeyword.toLowerCase();
 
     return animals.filter((animal) => {
+      const speciesName = getSpeciesName(animal.SPECIES_NM).toLowerCase();
       const matchKeyword =
-        animal.SPECIES_NM.toLowerCase().includes(keyword) ||
+        speciesName.includes(keyword) ||
         animal.SHTER_NM.toLowerCase().includes(keyword);
-      const matchAnimalType = animalType
-        ? animal.SPECIES_NM.includes(animalType)
-        : true;
       const matchGender = gender ? animal.SEX_NM === gender : true;
       const matchNeutered = neutered ? animal.NEUT_YN === neutered : true;
       const matchRegion = region
         ? animal.REFINE_ROADNM_ADDR?.includes(region)
         : true;
 
-      return (
-        matchKeyword &&
-        matchAnimalType &&
-        matchGender &&
-        matchNeutered &&
-        matchRegion
-      );
+      return matchKeyword && matchGender && matchNeutered && matchRegion;
     });
-  }, [animals, searchKeyword, animalType, gender, neutered, region]);
+  }, [animals, searchKeyword, gender, neutered, region]);
 
   // 현재 페이지 동물 리스트
   const currentAnimals = useMemo(() => {
@@ -87,16 +79,6 @@ const AnimalsPage = () => {
           className='w-full px-[15px] py-[10px] text-[16px] border border-[#ccc] rounded-[8px] focus:outline-black'
         />
         <div className='flex flex-wrap justify-center gap-[15px] mt-[20px]'>
-          <select
-            value={animalType}
-            onChange={(e) => setAnimalType(e.target.value)}
-            className='py-[5px] px-[10px] border border-[#ccc] rounded-[8px] focus:outline-black'
-          >
-            <option value=''>품종</option>
-            <option value='개'>개</option>
-            <option value='고양이'>고양이</option>
-            <option value='기타축종'>기타축종</option>
-          </select>
           <select
             value={gender}
             onChange={(e) => setGender(e.target.value)}
@@ -158,7 +140,6 @@ const AnimalsPage = () => {
           <button
             onClick={() => {
               setSearchKeyword('');
-              setAnimalType('');
               setGender('');
               setNeutered('');
               setRegion('');
@@ -190,7 +171,7 @@ const AnimalsPage = () => {
                 />
               </div>
               <h3 className='text-xl font-medium mt-[10px] text-[#444] truncate'>
-                {animal.SPECIES_NM} ∙{' '}
+                {getSpeciesName(animal.SPECIES_NM)} ∙{' '}
                 {animal.SEX_NM === 'F'
                   ? '여아'
                   : animal.SEX_NM === 'M'
