@@ -29,7 +29,7 @@ export type AnimalProtect = {
   THUMB_IMAGE_COURS: string; // 이미지 썸네일 주소
   RECEPT_DE: string; // 접수 일자
   DISCVRY_PLC_INFO: string; // 발견 장소 정보
-  SPECIES_NM: string; // 품종
+  SPECIES_NM: string; // 품종 코드
   COLOR_NM: string; // 색상 이름
   AGE_INFO: string; // 나이 정보
   BDWGH_INFO: string; // 몸무게 정보
@@ -54,3 +54,26 @@ export type AnimalProtect = {
   REFINE_WGS84_LOGT: string; // WGS84 경도
   REFINE_WGS84_LAT: string; // WGS84 위도
 };
+
+/**
+ * 컴포넌트에서 사용하는 동물 타입 (필요한 필드만 Pick)
+ */
+export type AnimalData = Pick<
+  AnimalProtect,
+  | 'ABDM_IDNTFY_NO'
+  | 'STATE_NM'
+  | 'SIGUN_NM'
+  | 'IMAGE_COURS'
+  | 'SPECIES_NM'
+  | 'COLOR_NM'
+  | 'AGE_INFO'
+  | 'BDWGH_INFO'
+  | 'SEX_NM'
+  | 'NEUT_YN'
+  | 'SFETR_INFO'
+  | 'SHTER_NM'
+  | 'SHTER_TELNO'
+  | 'REFINE_ROADNM_ADDR'
+  | 'REFINE_WGS84_LAT'
+  | 'REFINE_WGS84_LOGT'
+>;

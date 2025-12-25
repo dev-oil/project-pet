@@ -8,31 +8,15 @@ import Lightbox from 'yet-another-react-lightbox';
 import 'yet-another-react-lightbox/styles.css';
 import { ErrorFallback } from '../../components/ErrorFallback';
 import { Skeleton } from '../../components/Skeleton';
-import {
-  fetchAllShelterAnimals,
-  ShelterAnimal,
-} from '../../services/shelterAPI';
+import { fetchAllShelterAnimals, AnimalData } from '../../api/shelterAPI';
 import { loadKakaoMapScript } from '../../utils/kakaoMapUtils';
 
 import markerIMG from '/images/marker.png';
 
-const getSameSpecies = (animals: ShelterAnimal[], animal: ShelterAnimal) => {
+const getSameSpecies = (animals: AnimalData[], animal: AnimalData) => {
   return animals.filter(
     (item) =>
       item.SPECIES_NM === animal.SPECIES_NM &&
-      item.ABDM_IDNTFY_NO !== animal.ABDM_IDNTFY_NO
-  );
-};
-
-const getSameCategory = (
-  animals: ShelterAnimal[],
-  animal: ShelterAnimal,
-  category: string | undefined
-) => {
-  return animals.filter(
-    (item) =>
-      item.SPECIES_NM.startsWith(category ?? '') &&
-      item.SPECIES_NM !== animal.SPECIES_NM &&
       item.ABDM_IDNTFY_NO !== animal.ABDM_IDNTFY_NO
   );
 };
@@ -48,15 +32,12 @@ const AnimalsDetailPage = () => {
     queryFn: fetchAllShelterAnimals,
   });
 
-  const numericId = id ? Number(id) : undefined;
-
   // 먼저 state로 확인
-  const animalFromState = location.state as ShelterAnimal | undefined;
+  const animalFromState = location.state as AnimalData | undefined;
 
-  // 이후 params
+  // 이후 params (ABDM_IDNTFY_NO는 string이므로 직접 비교)
   const animal =
-    animalFromState ??
-    animals.find((item) => item.ABDM_IDNTFY_NO === numericId);
+    animalFromState ?? animals.find((item) => item.ABDM_IDNTFY_NO === id);
 
   // 팝업
   const [open, setOpen] = useState(false);
@@ -64,11 +45,8 @@ const AnimalsDetailPage = () => {
   const similarAnimals = useMemo(() => {
     if (!animal) return [];
 
-    const category = animal.SPECIES_NM.match(/\[(.*?)\]/)?.[0];
-    const sameSpecies = getSameSpecies(animals, animal);
-    const sameCategory = getSameCategory(animals, animal, category);
-
-    return [...sameSpecies, ...sameCategory].slice(0, 10);
+    // 같은 품종만 보여주기
+    return getSameSpecies(animals, animal).slice(0, 10);
   }, [animals, animal]);
 
   useEffect(() => {
