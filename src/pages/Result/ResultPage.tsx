@@ -4,7 +4,7 @@ import { Link, Navigate } from 'react-router-dom';
 
 import { useMbti } from '../../contexts/MbtiContext';
 import animals from '../../data/animals.json';
-import { fetchShelterAnimals } from '../../services/shelterAPI';
+import { fetchShelterAnimals } from '../../api/shelterAPI';
 import { MBTIType } from '../../types/mbti';
 
 type Animal = {

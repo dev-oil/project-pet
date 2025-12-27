@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 import { ErrorFallback } from '../../components/ErrorFallback';
 import { Skeleton } from '../../components/Skeleton';
 import { useFavorite } from '../../contexts/FavoriteContext';
-import { fetchAllShelterAnimals } from '../../services/shelterAPI';
+import { fetchAllShelterAnimals } from '../../api/shelterAPI';
 
 const FavoritePage = () => {
   const { favorites, toggleFavorite } = useFavorite();
