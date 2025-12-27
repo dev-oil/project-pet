@@ -6,6 +6,7 @@ import { useMbti } from '../../contexts/MbtiContext';
 import animals from '../../data/animals.json';
 import { fetchShelterAnimals } from '../../api/shelterAPI';
 import { MBTIType } from '../../types/mbti';
+import { getSpeciesName } from '../../utils/speciesUtils';
 
 type Animal = {
   category: string;
@@ -103,17 +104,23 @@ const ResultPage = () => {
         <ul className='flex flex-wrap gap-[30px] items-center justify-center mt-6'>
           {shelterAnimals.map((animal) => (
             <li key={animal.ABDM_IDNTFY_NO}>
-              <div className='w-[200px] h-[200px] rounded-[12px] overflow-hidden object-cover shadow-md transition-transform hover:scale-105'>
-                <img
-                  src={animal.IMAGE_COURS}
-                  alt={animal.SPECIES_NM}
-                  className='w-full h-full object-cover'
-                />
-              </div>
-              <div className='flex flex-col mt-[10px] text-center'>
-                <span>{animal.SPECIES_NM}</span>
-                <span>{animal.SHTER_NM}</span>
-              </div>
+              <Link
+                to={`/animals/${animal.ABDM_IDNTFY_NO}`}
+                state={animal}
+                className='block group'
+              >
+                <div className='w-[200px] h-[200px] rounded-[12px] overflow-hidden object-cover shadow-md transition-transform hover:scale-105'>
+                  <img
+                    src={animal.IMAGE_COURS}
+                    alt={getSpeciesName(animal.SPECIES_NM)}
+                    className='w-full h-full object-cover'
+                  />
+                </div>
+                <div className='flex flex-col mt-[10px] text-center'>
+                  <span>{getSpeciesName(animal.SPECIES_NM)}</span>
+                  <span>{animal.SHTER_NM}</span>
+                </div>
+              </Link>
             </li>
           ))}
         </ul>
