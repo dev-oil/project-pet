@@ -27,15 +27,3 @@ export const getSpeciesName = (speciesCode: string): string => {
 export const getSpeciesCode = (speciesName: string): string => {
   return speciesNameToCodeMap.get(speciesName) ?? speciesName;
 };
-
-/**
- * 품종 코드로 카테고리 추출
- * @param speciesCode - 품종 코드
- * @returns 카테고리 ([개], [고양이], [기타축종])
- */
-export const getSpeciesCategory = (speciesCode: string): string => {
-  const num = parseInt(speciesCode, 10);
-  if (num >= 1 && num <= 170) return '[개]';
-  if (num >= 171 && num <= 200) return '[고양이]';
-  return '[기타축종]';
-};
