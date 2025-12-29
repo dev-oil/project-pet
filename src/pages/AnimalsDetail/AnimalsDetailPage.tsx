@@ -8,7 +8,8 @@ import Lightbox from 'yet-another-react-lightbox';
 import 'yet-another-react-lightbox/styles.css';
 import { ErrorFallback } from '../../components/ErrorFallback';
 import { Skeleton } from '../../components/Skeleton';
-import { fetchAllShelterAnimals, AnimalData } from '../../api/shelterAPI';
+import { fetchAllShelterAnimals } from '../../api/shelterAPI';
+import type { AnimalData } from '../../types/api/AnimalProtectAPI';
 import { loadKakaoMapScript } from '../../utils/kakaoMapUtils';
 import { getSpeciesName } from '../../utils/speciesUtils';
 

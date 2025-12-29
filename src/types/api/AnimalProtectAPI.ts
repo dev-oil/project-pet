@@ -77,3 +77,28 @@ export type AnimalData = Pick<
   | 'REFINE_WGS84_LAT'
   | 'REFINE_WGS84_LOGT'
 >;
+
+/**
+ * API 요청 파라미터 타입
+ */
+export type FetchAnimalsParams = {
+  pIndex?: number; // 페이지 위치 (기본값: 1)
+  pSize?: number; // 페이지 당 요청 숫자 (기본값: 12)
+  SIGUN_CD?: string; // 시군코드 (선택)
+  SIGUN_NM?: string; // 시군명 (선택)
+  STATE_NM?: string; // 상태 (선택, 기본값: '보호중')
+  PBLANC_BEGIN_DE?: string; // 공고시작일자 (선택)
+  PBLANC_END_DE?: string; // 공고종료일자 (선택)
+  SPECIES_NM?: string; // 품종 (선택)
+  SHTER_NM?: string; // 보호소명 (선택)
+};
+
+/**
+ * API 응답 타입 (페이지네이션 정보 포함)
+ */
+export type FetchAnimalsResponse = {
+  animals: AnimalData[];
+  totalCount: number;
+  currentPage: number;
+  totalPages: number;
+};

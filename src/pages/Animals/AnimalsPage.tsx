@@ -1,57 +1,126 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { Suspense, useMemo, useState } from 'react';
+import { Suspense, useMemo, useState, useEffect } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { IoMdHeartEmpty, IoMdHeart } from 'react-icons/io';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 
 import { ErrorFallback } from '../../components/ErrorFallback';
 import { Skeleton } from '../../components/Skeleton';
 import { useFavorite } from '../../contexts/FavoriteContext';
 import { fetchAllShelterAnimals } from '../../api/shelterAPI';
-import { getSpeciesName } from '../../utils/speciesUtils';
+import type { AnimalData } from '../../types/api/AnimalProtectAPI';
+import { getSpeciesName, getSpeciesCode } from '../../utils/speciesUtils';
 
 const itemsPerPage = 12;
 
 const AnimalsPage = () => {
-  const [searchKeyword, setSearchKeyword] = useState('');
-  const [gender, setGender] = useState('');
-  const [neutered, setNeutered] = useState('');
-  const [region, setRegion] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // URL에서 적용 상태 읽어오기
+  const appliedSearchType = (searchParams.get('searchType') || 'species') as
+    | 'species'
+    | 'shelter';
+  const appliedSpeciesCode = searchParams.get('speciesCode') || '';
+  const appliedShelterName = searchParams.get('shelterName') || '';
+  const appliedGender = searchParams.get('gender') || '';
+  const appliedNeutered = searchParams.get('neutered') || '';
+  const appliedRegion = searchParams.get('region') || '';
+  const appliedPage = Number(searchParams.get('page')) || 1;
+
+  // 입력 상태 (사용자가 입력 중인 필터 값)
+  const [inputSearchType, setInputSearchType] = useState<'species' | 'shelter'>(
+    appliedSearchType
+  );
+  const [inputSearchKeyword, setInputSearchKeyword] = useState('');
+  const [inputGender, setInputGender] = useState(appliedGender);
+  const [inputNeutered, setInputNeutered] = useState(appliedNeutered);
+  const [inputRegion, setInputRegion] = useState(appliedRegion);
+
+  // URL 변경 시 입력 상태 동기화
+  useEffect(() => {
+    setInputSearchType(appliedSearchType);
+    setInputGender(appliedGender);
+    setInputNeutered(appliedNeutered);
+    setInputRegion(appliedRegion);
+  }, [appliedSearchType, appliedGender, appliedNeutered, appliedRegion]);
 
   const { favorites, toggleFavorite } = useFavorite();
 
-  const { data: animals } = useSuspenseQuery({
+  // 검색 버튼 클릭 핸들러
+  const handleSearch = () => {
+    const params = new URLSearchParams();
+    params.set('searchType', inputSearchType);
+    params.set('page', '1'); // 검색 시 페이지를 1로 리셋
+
+    if (inputSearchType === 'species') {
+      // 품종 검색: 이름을 코드로 변환
+      const speciesCode = getSpeciesCode(inputSearchKeyword);
+      if (speciesCode) params.set('speciesCode', speciesCode);
+    } else {
+      // 보호소명 검색
+      if (inputSearchKeyword) params.set('shelterName', inputSearchKeyword);
+    }
+
+    if (inputGender) params.set('gender', inputGender);
+    if (inputNeutered) params.set('neutered', inputNeutered);
+    if (inputRegion) params.set('region', inputRegion);
+
+    setSearchParams(params);
+  };
+
+  const { data: response } = useSuspenseQuery({
     queryKey: ['shelterAnimals', 'all'],
-    queryFn: fetchAllShelterAnimals,
+    queryFn: () => fetchAllShelterAnimals(),
   });
 
-  // 필터링된 동물 리스트
+  // 임시: 기존 코드와의 호환을 위해 animals 추출
+  const animals: AnimalData[] =
+    'animals' in response
+      ? response.animals
+      : (response as unknown as AnimalData[]);
+
+  // 필터링된 동물 리스트 (적용된 필터 기준)
   const filteredAnimals = useMemo(() => {
     if (!animals.length) return [];
 
-    const keyword = searchKeyword.toLowerCase();
-
     return animals.filter((animal) => {
-      const speciesName = getSpeciesName(animal.SPECIES_NM).toLowerCase();
-      const matchKeyword =
-        speciesName.includes(keyword) ||
-        animal.SHTER_NM.toLowerCase().includes(keyword);
-      const matchGender = gender ? animal.SEX_NM === gender : true;
-      const matchNeutered = neutered ? animal.NEUT_YN === neutered : true;
-      const matchRegion = region
-        ? animal.REFINE_ROADNM_ADDR?.includes(region)
+      // 검색어 매칭
+      let matchKeyword = true;
+      if (appliedSearchType === 'species' && appliedSpeciesCode) {
+        matchKeyword = animal.SPECIES_NM === appliedSpeciesCode;
+      } else if (appliedSearchType === 'shelter' && appliedShelterName) {
+        matchKeyword = animal.SHTER_NM.toLowerCase().includes(
+          appliedShelterName.toLowerCase()
+        );
+      }
+
+      const matchGender = appliedGender
+        ? animal.SEX_NM === appliedGender
+        : true;
+      const matchNeutered = appliedNeutered
+        ? animal.NEUT_YN === appliedNeutered
+        : true;
+      const matchRegion = appliedRegion
+        ? animal.REFINE_ROADNM_ADDR?.includes(appliedRegion)
         : true;
 
       return matchKeyword && matchGender && matchNeutered && matchRegion;
     });
-  }, [animals, searchKeyword, gender, neutered, region]);
+  }, [
+    animals,
+    appliedSearchType,
+    appliedSpeciesCode,
+    appliedShelterName,
+    appliedGender,
+    appliedNeutered,
+    appliedRegion,
+  ]);
 
   // 현재 페이지 동물 리스트
   const currentAnimals = useMemo(() => {
-    const startIndex = (currentPage - 1) * itemsPerPage;
+    const startIndex = (appliedPage - 1) * itemsPerPage;
     return filteredAnimals.slice(startIndex, startIndex + itemsPerPage);
-  }, [filteredAnimals, currentPage]);
+  }, [filteredAnimals, appliedPage]);
 
   // 전체 페이지 수
   const totalPages = useMemo(() => {
@@ -71,17 +140,38 @@ const AnimalsPage = () => {
       </p>
 
       <div className='mt-[40px] mb-[20px]'>
-        <input
-          type='text'
-          placeholder='품종 또는 보호소명을 검색하세요'
-          value={searchKeyword}
-          onChange={(e) => setSearchKeyword(e.target.value)}
-          className='w-full px-[15px] py-[10px] text-[16px] border border-[#ccc] rounded-[8px] focus:outline-black'
-        />
+        <div className='flex gap-[10px] mb-[10px]'>
+          <select
+            value={inputSearchType}
+            onChange={(e) =>
+              setInputSearchType(e.target.value as 'species' | 'shelter')
+            }
+            className='py-[5px] px-[10px] border border-[#ccc] rounded-[8px] focus:outline-black'
+          >
+            <option value='species'>품종 검색</option>
+            <option value='shelter'>보호소명 검색</option>
+          </select>
+          <input
+            type='text'
+            placeholder={
+              inputSearchType === 'species'
+                ? '품종 이름을 입력하세요'
+                : '보호소명을 입력하세요'
+            }
+            value={inputSearchKeyword}
+            onChange={(e) => setInputSearchKeyword(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                handleSearch();
+              }
+            }}
+            className='flex-1 px-[15px] py-[10px] text-[16px] border border-[#ccc] rounded-[8px] focus:outline-black'
+          />
+        </div>
         <div className='flex flex-wrap justify-center gap-[15px] mt-[20px]'>
           <select
-            value={gender}
-            onChange={(e) => setGender(e.target.value)}
+            value={inputGender}
+            onChange={(e) => setInputGender(e.target.value)}
             className='py-[5px] px-[10px] border border-[#ccc] rounded-[8px] focus:outline-black'
           >
             <option value=''>성별</option>
@@ -90,8 +180,8 @@ const AnimalsPage = () => {
             <option value='Q'>미상</option>
           </select>
           <select
-            value={neutered}
-            onChange={(e) => setNeutered(e.target.value)}
+            value={inputNeutered}
+            onChange={(e) => setInputNeutered(e.target.value)}
             className='py-[5px] px-[10px] border border-[#ccc] rounded-[8px] focus:outline-black'
           >
             <option value=''>중성화 여부</option>
@@ -99,8 +189,8 @@ const AnimalsPage = () => {
             <option value='N'>중성화 X</option>
           </select>
           <select
-            value={region}
-            onChange={(e) => setRegion(e.target.value)}
+            value={inputRegion}
+            onChange={(e) => setInputRegion(e.target.value)}
             className='py-[5px] px-[10px] border border-[#ccc] rounded-[8px] focus:outline-black'
           >
             <option value=''>지역</option>
@@ -138,13 +228,21 @@ const AnimalsPage = () => {
           </select>
 
           <button
+            onClick={handleSearch}
+            className='py-[6px] px-[10px] bg-black text-white rounded-[8px] cursor-pointer hover:bg-gray-800 transition-colors'
+          >
+            검색
+          </button>
+          <button
             onClick={() => {
-              setSearchKeyword('');
-              setGender('');
-              setNeutered('');
-              setRegion('');
+              setInputSearchType('species');
+              setInputSearchKeyword('');
+              setInputGender('');
+              setInputNeutered('');
+              setInputRegion('');
+              setSearchParams({}); // URL 초기화
             }}
-            className='py-[6px] px-[10px] bg-black text-white rounded-[8px] cursor-pointer'
+            className='py-[6px] px-[10px] bg-black text-white rounded-[8px] cursor-pointer hover:bg-gray-800 transition-colors'
           >
             필터 초기화
           </button>
@@ -204,22 +302,30 @@ const AnimalsPage = () => {
 
       <div className='flex justify-center items-center gap-[10px] my-[50px] mb-[20px]'>
         <button
-          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-          disabled={currentPage === 1}
+          onClick={() => {
+            const newPage = Math.max(appliedPage - 1, 1);
+            const params = new URLSearchParams(searchParams);
+            params.set('page', String(newPage));
+            setSearchParams(params);
+          }}
+          disabled={appliedPage === 1}
           className='px-[12px] py-[6px] text-[14px] border border-[#ccc] rounded-[6px] cursor-pointer hover:border-black'
         >
           ⬅ 이전
         </button>
 
         <span>
-          {currentPage} / {totalPages}
+          {appliedPage} / {totalPages}
         </span>
 
         <button
-          onClick={() =>
-            setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-          }
-          disabled={currentPage === totalPages}
+          onClick={() => {
+            const newPage = Math.min(appliedPage + 1, totalPages);
+            const params = new URLSearchParams(searchParams);
+            params.set('page', String(newPage));
+            setSearchParams(params);
+          }}
+          disabled={appliedPage === totalPages}
           className='px-[12px] py-[6px] text-[14px] border border-[#ccc] rounded-[6px] cursor-pointer hover:border-black'
         >
           다음 ➡
