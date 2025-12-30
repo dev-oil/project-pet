@@ -12,10 +12,12 @@ import { fetchAllShelterAnimals } from '../../api/shelterAPI';
 const FavoritePage = () => {
   const { favorites, toggleFavorite } = useFavorite();
 
-  const { data: allAnimals } = useSuspenseQuery({
+  const { data: response } = useSuspenseQuery({
     queryKey: ['shelterAnimals'],
-    queryFn: fetchAllShelterAnimals,
+    queryFn: () => fetchAllShelterAnimals(),
   });
+
+  const allAnimals = Array.isArray(response.animals) ? response.animals : [];
 
   const filteredAnimals = allAnimals.filter((animal) =>
     favorites.includes(String(animal.ABDM_IDNTFY_NO))

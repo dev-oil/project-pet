@@ -29,10 +29,12 @@ const AnimalsDetailPage = () => {
   const location = useLocation();
   const mapRef = useRef<HTMLDivElement>(null);
 
-  const { data: animals = [] } = useSuspenseQuery({
+  const { data: response } = useSuspenseQuery({
     queryKey: ['shelterAnimals', 'all'],
-    queryFn: fetchAllShelterAnimals,
+    queryFn: () => fetchAllShelterAnimals(),
   });
+
+  const animals = Array.isArray(response.animals) ? response.animals : [];
 
   // 먼저 state로 확인
   const animalFromState = location.state as AnimalData | undefined;

@@ -7,6 +7,10 @@ body {
   word-break: keep-all;
 }
 
+button {
+  cursor: pointer;
+}
+
 /* 공통 컴포넌트 */
 .header {
   position: sticky;
