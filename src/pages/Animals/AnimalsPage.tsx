@@ -4,11 +4,12 @@ import { ErrorBoundary } from 'react-error-boundary';
 import { IoMdHeartEmpty, IoMdHeart } from 'react-icons/io';
 import { Link, useSearchParams } from 'react-router-dom';
 
+import { fetchAllShelterAnimals } from '../../api/shelterAPI';
 import { ErrorFallback } from '../../components/ErrorFallback';
 import { Skeleton } from '../../components/Skeleton';
 import { useFavorite } from '../../contexts/FavoriteContext';
-import { fetchAllShelterAnimals } from '../../api/shelterAPI';
-import { getSpeciesName, getSpeciesCode } from '../../utils/speciesUtils';
+import speciesCodesData from '../../data/speciesCodes.json';
+import { getSpeciesName } from '../../utils/speciesUtils';
 
 const itemsPerPage = 12;
 
@@ -16,51 +17,44 @@ const AnimalsPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   // 입력 상태 (사용자가 입력 중인 필터 값)
-  const [inputSearchType, setInputSearchType] = useState<'species' | 'shelter'>(
-    (searchParams.get('searchType') || 'species') as 'species' | 'shelter'
+  const [inputSpeciesCode, setInputSpeciesCode] = useState(
+    searchParams.get('SPECIES_NM') || ''
   );
-  const [inputSearchKeyword, setInputSearchKeyword] = useState('');
+  const [inputShterNm, setInputShterNm] = useState(
+    searchParams.get('SHTER_NM') || ''
+  );
   const [inputSigunNm, setInputSigunNm] = useState(
     searchParams.get('SIGUN_NM') || ''
   );
 
   const { favorites, toggleFavorite } = useFavorite();
 
+  const speciesOptions = useMemo(() => {
+    return Object.entries(speciesCodesData).map(([code, name]) => ({
+      code,
+      name: name,
+    }));
+  }, []);
+
   // 브라우저 뒤로가기 대응: URL 변경 시 입력 상태 동기화
   useEffect(() => {
-    const searchType = searchParams.get('searchType') as 'species' | 'shelter';
-    const sigunNm = searchParams.get('SIGUN_NM');
     const speciesNm = searchParams.get('SPECIES_NM');
     const shterNm = searchParams.get('SHTER_NM');
+    const sigunNm = searchParams.get('SIGUN_NM');
 
-    setInputSearchType(searchType || 'species');
+    setInputSpeciesCode(speciesNm || '');
+    setInputShterNm(shterNm || '');
     setInputSigunNm(sigunNm || '');
-
-    // 검색어 복원
-    if (searchType === 'species' && speciesNm) {
-      const speciesName = getSpeciesName(speciesNm);
-      setInputSearchKeyword(speciesName);
-    } else if (searchType === 'shelter' && shterNm) {
-      setInputSearchKeyword(shterNm);
-    } else {
-      setInputSearchKeyword('');
-    }
   }, [searchParams]);
 
   // 검색 버튼 클릭 핸들러
   const handleSearch = () => {
     const params: Record<string, string> = {
-      searchType: inputSearchType,
       page: '1',
     };
 
-    if (inputSearchType === 'species') {
-      const speciesCode = getSpeciesCode(inputSearchKeyword);
-      if (speciesCode) params.SPECIES_NM = speciesCode;
-    } else if (inputSearchKeyword) {
-      params.SHTER_NM = inputSearchKeyword;
-    }
-
+    if (inputSpeciesCode) params.SPECIES_NM = inputSpeciesCode;
+    if (inputShterNm) params.SHTER_NM = inputShterNm;
     if (inputSigunNm) params.SIGUN_NM = inputSigunNm;
 
     setSearchParams(params);
@@ -125,37 +119,6 @@ const AnimalsPage = () => {
 
       <div className='mt-[40px] mb-[60px]'>
         <div className='flex items-center gap-[10px] p-[30px] rounded-[12px] shadow-[5px_5px_20px_rgba(0,0,0,0.1)]'>
-          {/* 검색 타입과 검색어를 하나의 통합된 입력창으로 */}
-          <div className='flex-1 flex items-center bg-white rounded-[8px] border border-gray-300 hover:border-black focus-within:border-black transition-colors'>
-            <select
-              value={inputSearchType}
-              onChange={(e) =>
-                setInputSearchType(e.target.value as 'species' | 'shelter')
-              }
-              className='px-[15px] py-[12px] bg-transparent border-none outline-none text-[14px] font-medium text-gray-700 cursor-pointer'
-            >
-              <option value='species'>품종</option>
-              <option value='shelter'>보호소</option>
-            </select>
-            <div className='w-[1px] h-[20px] bg-gray-300'></div>
-            <input
-              type='text'
-              placeholder={
-                inputSearchType === 'species'
-                  ? '품종 이름 입력'
-                  : '보호소명 입력'
-              }
-              value={inputSearchKeyword}
-              onChange={(e) => setInputSearchKeyword(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  handleSearch();
-                }
-              }}
-              className='flex-1 px-[15px] py-[12px] text-[14px] bg-transparent border-none outline-none'
-            />
-          </div>
-
           {/* 지역 선택 */}
           <select
             value={inputSigunNm}
@@ -196,6 +159,34 @@ const AnimalsPage = () => {
             <option value='화성시'>화성시</option>
           </select>
 
+          {/* 품종 선택 */}
+          <select
+            value={inputSpeciesCode}
+            onChange={(e) => setInputSpeciesCode(e.target.value)}
+            className='px-[15px] py-[12px] text-[14px] bg-white border border-gray-300 rounded-[8px] outline-none cursor-pointer hover:border-black transition-colors'
+          >
+            <option value=''>전체 품종</option>
+            {speciesOptions.map((species) => (
+              <option key={species.code} value={species.code}>
+                {species.name}
+              </option>
+            ))}
+          </select>
+
+          {/* 보호소명 입력 */}
+          <input
+            type='text'
+            placeholder='보호소명 입력'
+            value={inputShterNm}
+            onChange={(e) => setInputShterNm(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                handleSearch();
+              }
+            }}
+            className='flex-1 px-[15px] py-[12px] text-[14px] bg-white border border-gray-300 rounded-[8px] outline-none hover:border-black focus:border-black transition-colors'
+          />
+
           {/* 검색 버튼 */}
           <button
             onClick={handleSearch}
@@ -207,10 +198,10 @@ const AnimalsPage = () => {
           {/* 초기화 버튼 */}
           <button
             onClick={() => {
-              setInputSearchType('species');
-              setInputSearchKeyword('');
+              setInputSpeciesCode('');
+              setInputShterNm('');
               setInputSigunNm('');
-              setSearchParams({}); // URL 초기화
+              setSearchParams({});
             }}
             className='px-[20px] py-[12px] bg-white text-gray-700 text-[14px] font-medium rounded-[8px] border border-black hover:bg-gray-50 transition-colors whitespace-nowrap'
           >
