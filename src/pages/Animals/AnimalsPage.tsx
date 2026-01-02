@@ -257,7 +257,7 @@ const AnimalsPage = () => {
               <button
                 className='absolute top-[30px] right-[30px] cursor-pointer'
                 type='button'
-                onClick={() => toggleFavorite(animal.ABDM_IDNTFY_NO)}
+                onClick={() => toggleFavorite(animal)}
               >
                 {favorites.includes(String(animal.ABDM_IDNTFY_NO)) ? (
                   <IoMdHeart className='text-pink-400' size={30} />
