@@ -1,25 +1,12 @@
-import { useSuspenseQuery } from '@tanstack/react-query';
-import { Suspense } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { IoMdHeart } from 'react-icons/io';
 import { Link } from 'react-router-dom';
 
 import { ErrorFallback } from '../../components/ErrorFallback';
-import { Skeleton } from '../../components/Skeleton';
 import { useFavorite } from '../../contexts/FavoriteContext';
-import { fetchAllShelterAnimals } from '../../api/shelterAPI';
 
 const FavoritePage = () => {
-  const { favorites, toggleFavorite } = useFavorite();
-
-  const { data: allAnimals } = useSuspenseQuery({
-    queryKey: ['shelterAnimals'],
-    queryFn: fetchAllShelterAnimals,
-  });
-
-  const filteredAnimals = allAnimals.filter((animal) =>
-    favorites.includes(String(animal.ABDM_IDNTFY_NO))
-  );
+  const { favoriteAnimals, toggleFavorite } = useFavorite();
 
   return (
     <main className='max-w-[1400px] mx-auto px-[20px] py-[40px]'>
@@ -28,13 +15,13 @@ const FavoritePage = () => {
         함께하고 싶은 친구를 확인해보세요
       </span>
 
-      {filteredAnimals.length === 0 ? (
+      {favoriteAnimals.length === 0 ? (
         <p className='text-center mt-[40px] text-xl'>
           아직 찜한 털북숭이 칭구가 없어요! 🥲
         </p>
       ) : (
         <ul className='grid grid-cols-[repeat(auto-fit,minmax(350px,1fr))] gap-x-[25px] gap-y-[35px] justify-center my-[40px]'>
-          {filteredAnimals.map((animal) => (
+          {favoriteAnimals.map((animal) => (
             <li key={animal.ABDM_IDNTFY_NO} className='group relative w-full'>
               <Link
                 to={`/animals/${animal.ABDM_IDNTFY_NO}`}
@@ -67,7 +54,7 @@ const FavoritePage = () => {
               <button
                 className='absolute top-[30px] right-[30px] cursor-pointer'
                 type='button'
-                onClick={() => toggleFavorite(animal.ABDM_IDNTFY_NO)}
+                onClick={() => toggleFavorite(animal)}
               >
                 <IoMdHeart className='text-pink-400' size={30} />
               </button>
@@ -82,9 +69,7 @@ const FavoritePage = () => {
 const FavoritePageWrapper = () => {
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
-      <Suspense fallback={<Skeleton />}>
-        <FavoritePage />
-      </Suspense>
+      <FavoritePage />
     </ErrorBoundary>
   );
 };

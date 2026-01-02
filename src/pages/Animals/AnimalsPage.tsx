@@ -1,62 +1,109 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { Suspense, useMemo, useState } from 'react';
+import { Suspense, useEffect, useMemo, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { IoMdHeartEmpty, IoMdHeart } from 'react-icons/io';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 
+import { fetchAllShelterAnimals } from '../../api/shelterAPI';
 import { ErrorFallback } from '../../components/ErrorFallback';
 import { Skeleton } from '../../components/Skeleton';
 import { useFavorite } from '../../contexts/FavoriteContext';
-import { fetchAllShelterAnimals } from '../../api/shelterAPI';
+import speciesCodesData from '../../data/speciesCodes.json';
 import { getSpeciesName } from '../../utils/speciesUtils';
 
 const itemsPerPage = 12;
 
 const AnimalsPage = () => {
-  const [searchKeyword, setSearchKeyword] = useState('');
-  const [gender, setGender] = useState('');
-  const [neutered, setNeutered] = useState('');
-  const [region, setRegion] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // 입력 상태 (사용자가 입력 중인 필터 값)
+  const [inputSpeciesCode, setInputSpeciesCode] = useState(
+    searchParams.get('SPECIES_NM') || ''
+  );
+  const [inputShterNm, setInputShterNm] = useState(
+    searchParams.get('SHTER_NM') || ''
+  );
+  const [inputSigunNm, setInputSigunNm] = useState(
+    searchParams.get('SIGUN_NM') || ''
+  );
 
   const { favorites, toggleFavorite } = useFavorite();
 
-  const { data: animals } = useSuspenseQuery({
-    queryKey: ['shelterAnimals', 'all'],
-    queryFn: fetchAllShelterAnimals,
+  const speciesOptions = useMemo(() => {
+    return Object.entries(speciesCodesData).map(([code, name]) => ({
+      code,
+      name: name,
+    }));
+  }, []);
+
+  // 브라우저 뒤로가기 대응: URL 변경 시 입력 상태 동기화
+  useEffect(() => {
+    const speciesNm = searchParams.get('SPECIES_NM');
+    const shterNm = searchParams.get('SHTER_NM');
+    const sigunNm = searchParams.get('SIGUN_NM');
+
+    setInputSpeciesCode(speciesNm || '');
+    setInputShterNm(shterNm || '');
+    setInputSigunNm(sigunNm || '');
+  }, [searchParams]);
+
+  // 검색 버튼 클릭 핸들러
+  const handleSearch = () => {
+    const params: Record<string, string> = {
+      page: '1',
+    };
+
+    if (inputSpeciesCode) params.SPECIES_NM = inputSpeciesCode;
+    if (inputShterNm) params.SHTER_NM = inputShterNm;
+    if (inputSigunNm) params.SIGUN_NM = inputSigunNm;
+
+    setSearchParams(params);
+  };
+
+  // 페이지 변경 핸들러
+  const handlePageChange = (newPage: number) => {
+    setSearchParams((prev) => ({
+      ...Object.fromEntries(prev),
+      page: String(newPage),
+    }));
+  };
+
+  // URL 파라미터를 API 파라미터로 변환
+  const apiParams = useMemo(() => {
+    const sigunNm = searchParams.get('SIGUN_NM');
+    const speciesNm = searchParams.get('SPECIES_NM');
+    const shterNm = searchParams.get('SHTER_NM');
+    const page = Number(searchParams.get('page')) || 1;
+
+    const params: {
+      pIndex: number;
+      pSize: number;
+      STATE_NM?: string;
+      SIGUN_NM?: string;
+      SPECIES_NM?: string;
+      SHTER_NM?: string;
+    } = {
+      pIndex: page,
+      pSize: itemsPerPage,
+      STATE_NM: '보호중',
+    };
+
+    if (sigunNm) params.SIGUN_NM = sigunNm;
+    if (speciesNm) params.SPECIES_NM = speciesNm;
+    if (shterNm) params.SHTER_NM = shterNm;
+
+    return params;
+  }, [searchParams]);
+
+  const { data: response } = useSuspenseQuery({
+    queryKey: ['shelterAnimals', apiParams],
+    queryFn: () => fetchAllShelterAnimals(apiParams),
   });
 
-  // 필터링된 동물 리스트
-  const filteredAnimals = useMemo(() => {
-    if (!animals.length) return [];
-
-    const keyword = searchKeyword.toLowerCase();
-
-    return animals.filter((animal) => {
-      const speciesName = getSpeciesName(animal.SPECIES_NM).toLowerCase();
-      const matchKeyword =
-        speciesName.includes(keyword) ||
-        animal.SHTER_NM.toLowerCase().includes(keyword);
-      const matchGender = gender ? animal.SEX_NM === gender : true;
-      const matchNeutered = neutered ? animal.NEUT_YN === neutered : true;
-      const matchRegion = region
-        ? animal.REFINE_ROADNM_ADDR?.includes(region)
-        : true;
-
-      return matchKeyword && matchGender && matchNeutered && matchRegion;
-    });
-  }, [animals, searchKeyword, gender, neutered, region]);
-
-  // 현재 페이지 동물 리스트
-  const currentAnimals = useMemo(() => {
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    return filteredAnimals.slice(startIndex, startIndex + itemsPerPage);
-  }, [filteredAnimals, currentPage]);
-
-  // 전체 페이지 수
-  const totalPages = useMemo(() => {
-    return Math.ceil(filteredAnimals.length / itemsPerPage);
-  }, [filteredAnimals]);
+  // 서버 응답에서 데이터 추출
+  const animals = response.animals;
+  const totalCount = response.totalCount;
+  const totalPages = response.totalPages;
 
   return (
     <main className='relative max-w-[1400px] mx-auto px-[20px] py-[40px]'>
@@ -70,40 +117,15 @@ const AnimalsPage = () => {
         나의 털북숭이 친구와 보호소 정보를 함께 확인하세요.
       </p>
 
-      <div className='mt-[40px] mb-[20px]'>
-        <input
-          type='text'
-          placeholder='품종 또는 보호소명을 검색하세요'
-          value={searchKeyword}
-          onChange={(e) => setSearchKeyword(e.target.value)}
-          className='w-full px-[15px] py-[10px] text-[16px] border border-[#ccc] rounded-[8px] focus:outline-black'
-        />
-        <div className='flex flex-wrap justify-center gap-[15px] mt-[20px]'>
+      <div className='mt-[40px] mb-[60px]'>
+        <div className='flex items-center gap-[10px] p-[30px] rounded-[12px] shadow-[5px_5px_20px_rgba(0,0,0,0.1)]'>
+          {/* 지역 선택 */}
           <select
-            value={gender}
-            onChange={(e) => setGender(e.target.value)}
-            className='py-[5px] px-[10px] border border-[#ccc] rounded-[8px] focus:outline-black'
+            value={inputSigunNm}
+            onChange={(e) => setInputSigunNm(e.target.value)}
+            className='px-[15px] py-[12px] text-[14px] bg-white border border-gray-300 rounded-[8px] outline-none cursor-pointer hover:border-black transition-colors min-w-[120px]'
           >
-            <option value=''>성별</option>
-            <option value='M'>남아</option>
-            <option value='F'>여아</option>
-            <option value='Q'>미상</option>
-          </select>
-          <select
-            value={neutered}
-            onChange={(e) => setNeutered(e.target.value)}
-            className='py-[5px] px-[10px] border border-[#ccc] rounded-[8px] focus:outline-black'
-          >
-            <option value=''>중성화 여부</option>
-            <option value='Y'>중성화 O</option>
-            <option value='N'>중성화 X</option>
-          </select>
-          <select
-            value={region}
-            onChange={(e) => setRegion(e.target.value)}
-            className='py-[5px] px-[10px] border border-[#ccc] rounded-[8px] focus:outline-black'
-          >
-            <option value=''>지역</option>
+            <option value=''>전체 지역</option>
             <option value='가평군'>가평군</option>
             <option value='고양시'>고양시</option>
             <option value='과천시'>과천시</option>
@@ -137,94 +159,146 @@ const AnimalsPage = () => {
             <option value='화성시'>화성시</option>
           </select>
 
+          {/* 품종 선택 */}
+          <select
+            value={inputSpeciesCode}
+            onChange={(e) => setInputSpeciesCode(e.target.value)}
+            className='px-[15px] py-[12px] text-[14px] bg-white border border-gray-300 rounded-[8px] outline-none cursor-pointer hover:border-black transition-colors'
+          >
+            <option value=''>전체 품종</option>
+            {speciesOptions.map((species) => (
+              <option key={species.code} value={species.code}>
+                {species.name}
+              </option>
+            ))}
+          </select>
+
+          {/* 보호소명 입력 */}
+          <input
+            type='text'
+            placeholder='보호소명 입력'
+            value={inputShterNm}
+            onChange={(e) => setInputShterNm(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                handleSearch();
+              }
+            }}
+            className='flex-1 px-[15px] py-[12px] text-[14px] bg-white border border-gray-300 rounded-[8px] outline-none hover:border-black focus:border-black transition-colors'
+          />
+
+          {/* 검색 버튼 */}
+          <button
+            onClick={handleSearch}
+            className='px-[24px] py-[12px] bg-black text-white text-[14px] font-medium rounded-[8px] hover:bg-gray-800 transition-colors whitespace-nowrap'
+          >
+            검색
+          </button>
+
+          {/* 초기화 버튼 */}
           <button
             onClick={() => {
-              setSearchKeyword('');
-              setGender('');
-              setNeutered('');
-              setRegion('');
+              setInputSpeciesCode('');
+              setInputShterNm('');
+              setInputSigunNm('');
+              setSearchParams({});
             }}
-            className='py-[6px] px-[10px] bg-black text-white rounded-[8px] cursor-pointer'
+            className='px-[20px] py-[12px] bg-white text-gray-700 text-[14px] font-medium rounded-[8px] border border-black hover:bg-gray-50 transition-colors whitespace-nowrap'
           >
-            필터 초기화
+            초기화
           </button>
         </div>
       </div>
 
       <span className='text-center my-[20px] mb-[10px] text-[18px] font-[500]'>
-        <span className='font-bold'>{filteredAnimals.length}</span>마리의
-        친구들이 있어요
+        <span className='font-bold'>{totalCount}</span>마리의 친구들이 있어요
       </span>
-      <ul className='grid grid-cols-[repeat(auto-fit,minmax(350px,1fr))] gap-x-[25px] gap-y-[35px] justify-center my-[20px]'>
-        {currentAnimals.map((animal) => (
-          <li className='group relative w-full ' key={animal.ABDM_IDNTFY_NO}>
-            <Link
-              to={`/animals/${animal.ABDM_IDNTFY_NO}`}
-              state={animal}
-              className='block bg-white p-[20px] rounded-[10px] text-center shadow-[5px_5px_20px_rgba(0,0,0,0.1)]'
-            >
-              <div className='h-[250px] rounded-[8px] overflow-hidden'>
-                <img
-                  src={animal.IMAGE_COURS}
-                  alt='유기동물 이미지'
-                  className='w-full h-full object-cover group-hover:scale-110 transition-all'
-                />
-              </div>
-              <h3 className='text-xl font-medium mt-[10px] text-[#444] truncate'>
-                {getSpeciesName(animal.SPECIES_NM)} ∙{' '}
-                {animal.SEX_NM === 'F'
-                  ? '여아'
-                  : animal.SEX_NM === 'M'
-                  ? '남아'
-                  : '성별 정보 없음'}{' '}
-                ∙ <span>{animal.BDWGH_INFO}</span>
-              </h3>
-              <strong className='absolute top-[30px] left-[35px] px-[10px] py-[5px] bg-white rounded-xl border-1 truncate'>
-                {animal.STATE_NM}
-              </strong>
-              <span className='block text-lg mt-[10px]'>{animal.SHTER_NM}</span>
-              <span className='block mt-[5px]'>
-                {animal.REFINE_ROADNM_ADDR}
-              </span>
-            </Link>
-            <button
-              className='absolute top-[30px] right-[30px] cursor-pointer'
-              type='button'
-              onClick={() => toggleFavorite(animal.ABDM_IDNTFY_NO)}
-            >
-              {favorites.includes(String(animal.ABDM_IDNTFY_NO)) ? (
-                <IoMdHeart className='text-pink-400' size={30} />
-              ) : (
-                <IoMdHeartEmpty className='text-white' size={30} />
-              )}
-            </button>
-          </li>
-        ))}
-      </ul>
 
-      <div className='flex justify-center items-center gap-[10px] my-[50px] mb-[20px]'>
-        <button
-          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-          disabled={currentPage === 1}
-          className='px-[12px] py-[6px] text-[14px] border border-[#ccc] rounded-[6px] cursor-pointer hover:border-black'
-        >
-          ⬅ 이전
-        </button>
+      {animals.length === 0 ? (
+        <div className='flex flex-col items-center justify-center py-[100px]'>
+          <p className='text-[24px] mb-[10px]'>검색 결과가 없습니다 😢</p>
+          <p className='text-[16px]'>다른 검색 조건으로 다시 시도해보세요</p>
+        </div>
+      ) : (
+        <ul className='grid grid-cols-[repeat(auto-fit,minmax(350px,1fr))] gap-x-[25px] gap-y-[35px] justify-center my-[20px]'>
+          {animals.map((animal) => (
+            <li className='group relative w-full ' key={animal.ABDM_IDNTFY_NO}>
+              <Link
+                to={`/animals/${animal.ABDM_IDNTFY_NO}`}
+                state={animal}
+                className='block bg-white p-[20px] rounded-[10px] text-center shadow-[5px_5px_20px_rgba(0,0,0,0.1)]'
+              >
+                <div className='h-[250px] rounded-[8px] overflow-hidden'>
+                  <img
+                    src={animal.IMAGE_COURS}
+                    alt='유기동물 이미지'
+                    className='w-full h-full object-cover group-hover:scale-110 transition-all'
+                  />
+                </div>
+                <h3 className='text-xl font-medium mt-[10px] text-[#444] truncate'>
+                  {getSpeciesName(animal.SPECIES_NM)} ∙{' '}
+                  {animal.SEX_NM === 'F'
+                    ? '여아'
+                    : animal.SEX_NM === 'M'
+                    ? '남아'
+                    : '성별 정보 없음'}{' '}
+                  ∙ <span>{animal.BDWGH_INFO}</span>
+                </h3>
+                <strong className='absolute top-[30px] left-[35px] px-[10px] py-[5px] bg-white rounded-xl border-1 truncate'>
+                  {animal.STATE_NM}
+                </strong>
+                <span className='block text-lg mt-[10px]'>
+                  {animal.SHTER_NM}
+                </span>
+                <span className='block mt-[5px]'>
+                  {animal.REFINE_ROADNM_ADDR}
+                </span>
+              </Link>
+              <button
+                className='absolute top-[30px] right-[30px] cursor-pointer'
+                type='button'
+                onClick={() => toggleFavorite(animal)}
+              >
+                {favorites.includes(String(animal.ABDM_IDNTFY_NO)) ? (
+                  <IoMdHeart className='text-pink-400' size={30} />
+                ) : (
+                  <IoMdHeartEmpty className='text-white' size={30} />
+                )}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
 
-        <span>
-          {currentPage} / {totalPages}
-        </span>
+      {animals.length > 0 && (
+        <div className='flex justify-center items-center gap-[10px] my-[50px] mb-[20px]'>
+          <button
+            onClick={() => {
+              const currentPage = Number(searchParams.get('page')) || 1;
+              handlePageChange(Math.max(currentPage - 1, 1));
+            }}
+            disabled={(Number(searchParams.get('page')) || 1) === 1}
+            className='px-[12px] py-[6px] text-[14px] border border-[#ccc] rounded-[6px] cursor-pointer hover:border-black disabled:opacity-50 disabled:cursor-not-allowed disabled:border-[#ccc]'
+          >
+            ⬅ 이전
+          </button>
 
-        <button
-          onClick={() =>
-            setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-          }
-          disabled={currentPage === totalPages}
-          className='px-[12px] py-[6px] text-[14px] border border-[#ccc] rounded-[6px] cursor-pointer hover:border-black'
-        >
-          다음 ➡
-        </button>
-      </div>
+          <span>
+            {Number(searchParams.get('page')) || 1} / {totalPages}
+          </span>
+
+          <button
+            onClick={() => {
+              const currentPage = Number(searchParams.get('page')) || 1;
+              handlePageChange(Math.min(currentPage + 1, totalPages));
+            }}
+            disabled={(Number(searchParams.get('page')) || 1) === totalPages}
+            className='px-[12px] py-[6px] text-[14px] border border-[#ccc] rounded-[6px] cursor-pointer hover:border-black disabled:opacity-50 disabled:cursor-not-allowed disabled:border-[#ccc]'
+          >
+            다음 ➡
+          </button>
+        </div>
+      )}
     </main>
   );
 };

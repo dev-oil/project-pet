@@ -8,7 +8,8 @@ import Lightbox from 'yet-another-react-lightbox';
 import 'yet-another-react-lightbox/styles.css';
 import { ErrorFallback } from '../../components/ErrorFallback';
 import { Skeleton } from '../../components/Skeleton';
-import { fetchAllShelterAnimals, AnimalData } from '../../api/shelterAPI';
+import { fetchAllShelterAnimals } from '../../api/shelterAPI';
+import type { AnimalData } from '../../types/api/AnimalProtectAPI';
 import { loadKakaoMapScript } from '../../utils/kakaoMapUtils';
 import { getSpeciesName } from '../../utils/speciesUtils';
 
@@ -28,10 +29,12 @@ const AnimalsDetailPage = () => {
   const location = useLocation();
   const mapRef = useRef<HTMLDivElement>(null);
 
-  const { data: animals = [] } = useSuspenseQuery({
+  const { data: response } = useSuspenseQuery({
     queryKey: ['shelterAnimals', 'all'],
-    queryFn: fetchAllShelterAnimals,
+    queryFn: () => fetchAllShelterAnimals(),
   });
+
+  const animals = Array.isArray(response.animals) ? response.animals : [];
 
   // 먼저 state로 확인
   const animalFromState = location.state as AnimalData | undefined;
