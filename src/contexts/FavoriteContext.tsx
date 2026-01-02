@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useMemo } from 'react';
+import React, { createContext, useContext, useMemo, useCallback } from 'react';
 
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import type { AnimalData } from '../types/api/AnimalProtectAPI';
@@ -34,25 +34,36 @@ export const FavoriteProvider = ({
     [favoriteAnimalsMap]
   );
 
-  const toggleFavorite = (animal: AnimalData) => {
-    const idStr = String(animal.ABDM_IDNTFY_NO);
-    const updated = { ...favoriteAnimalsMap };
+  const toggleFavorite = useCallback(
+    (animal: AnimalData) => {
+      const idStr = String(animal.ABDM_IDNTFY_NO);
+      const updated = { ...favoriteAnimalsMap };
 
-    if (updated[idStr]) {
-      // 이미 있으면 제거
-      delete updated[idStr];
-    } else {
-      // 없으면 추가
-      updated[idStr] = animal;
-    }
+      if (updated[idStr]) {
+        // 이미 있으면 제거
+        delete updated[idStr];
+      } else {
+        // 없으면 추가
+        updated[idStr] = animal;
+      }
 
-    setFavoriteAnimalsMap(updated);
-  };
+      setFavoriteAnimalsMap(updated);
+    },
+    [favoriteAnimalsMap, setFavoriteAnimalsMap]
+  );
+
+  // Context value도 메모이제이션
+  const value = useMemo(
+    () => ({
+      favorites,
+      favoriteAnimals,
+      toggleFavorite,
+    }),
+    [favorites, favoriteAnimals, toggleFavorite]
+  );
 
   return (
-    <FavoriteContext.Provider
-      value={{ favorites, favoriteAnimals, toggleFavorite }}
-    >
+    <FavoriteContext.Provider value={value}>
       {children}
     </FavoriteContext.Provider>
   );
